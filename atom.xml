@@ -6,7 +6,7 @@
   <link href="https://qiuzhiblog.cn/atom.xml" rel="self"/>
   
   <link href="https://qiuzhiblog.cn/"/>
-  <updated>2022-01-30T14:57:14.475Z</updated>
+  <updated>2022-02-15T09:40:36.155Z</updated>
   <id>https://qiuzhiblog.cn/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Spring基础</title>
-    <link href="https://qiuzhiblog.cn/2022/01/30/Java%E5%9F%BA%E7%A1%80/"/>
-    <id>https://qiuzhiblog.cn/2022/01/30/Java%E5%9F%BA%E7%A1%80/</id>
-    <published>2022-01-30T09:36:23.000Z</published>
-    <updated>2022-01-30T14:57:14.475Z</updated>
+    <title>SpringBoot简介</title>
+    <link href="https://qiuzhiblog.cn/2022/02/15/SpringBoot%E7%AE%80%E4%BB%8B/"/>
+    <id>https://qiuzhiblog.cn/2022/02/15/SpringBoot%E7%AE%80%E4%BB%8B/</id>
+    <published>2022-02-15T09:38:10.000Z</published>
+    <updated>2022-02-15T09:40:36.155Z</updated>
     
     
       
@@ -31,8 +31,36 @@
     
     
     
+    <category term="SpringBoot" scheme="https://qiuzhiblog.cn/categories/SpringBoot/"/>
     
-    <category term="java spring" scheme="https://qiuzhiblog.cn/tags/java-spring/"/>
+    
+    <category term="SpringBoot" scheme="https://qiuzhiblog.cn/tags/SpringBoot/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Spring基础</title>
+    <link href="https://qiuzhiblog.cn/2022/01/30/Java%E5%9F%BA%E7%A1%80/"/>
+    <id>https://qiuzhiblog.cn/2022/01/30/Java%E5%9F%BA%E7%A1%80/</id>
+    <published>2022-01-30T09:36:23.000Z</published>
+    <updated>2022-02-15T09:15:58.091Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;\assets\css\APlayer.min.css&quot;&gt;&lt;script src=&quot;\assets\js\APlayer.min.js&quot; cla</summary>
+      
+    
+    
+    
+    <category term="测试" scheme="https://qiuzhiblog.cn/categories/%E6%B5%8B%E8%AF%95/"/>
+    
+    <category term="生活" scheme="https://qiuzhiblog.cn/categories/%E6%B5%8B%E8%AF%95/%E7%94%9F%E6%B4%BB/"/>
+    
+    
+    <category term="java" scheme="https://qiuzhiblog.cn/tags/java/"/>
+    
+    <category term="spring" scheme="https://qiuzhiblog.cn/tags/spring/"/>
     
   </entry>
   

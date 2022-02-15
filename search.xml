@@ -1,6 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>SpringBoot简介</title>
+    <url>/2022/02/15/SpringBoot%E7%AE%80%E4%BB%8B/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h4 id="Spring的本质"><a href="#Spring的本质" class="headerlink" title="Spring的本质"></a>Spring的本质</h4><p>从本质上说，Spring就是一个“组件”容器，它负责创建并管理容器中的所有组件(也称为Bean)，以及管理组件之间的依赖关系。所以Spring的核心功能主要有两点：</p>
+<ul>
+<li><strong>管理所有组件</strong>（Component）： @Component（@Controller、@Service、@Repository）</li>
+<li><strong>完成依赖注入</strong>：  @Autowired</li>
+</ul>
+<p>Java EE应用涉及到如下组件，有了Spring之后，一切组件都交给Spring去管理、放到Spring 容器中。组件之间的依赖关系，也将交给Spring去负责维护。</p>
+<ul>
+<li>前端控制器组件</li>
+<li>安全组件（Spring Security,Shiro)</li>
+<li>业务逻辑组件</li>
+<li>消息组件（RabbitMQ、Kafka）</li>
+<li>DAO组件（Spring也称其为Repository）</li>
+<li>连接数据库的基础组件（如DataSource、ConnectionFactory、SessionFactory等）</li>
+</ul>
+<h4 id="Java后端开发所涉及的技术"><a href="#Java后端开发所涉及的技术" class="headerlink" title="Java后端开发所涉及的技术"></a>Java后端开发所涉及的技术</h4><ul>
+<li>前端MVC层：Spring WebFlux、Spring MVC、Struts 2（已被淘汰）等。</li>
+<li>安全领域：Spring Security、Shiro等。</li>
+<li>消息组件：ActiveMQ、RabbitMQ、Kafka等。</li>
+<li>缓存：JCache、EhCache、Hazelcast、Redis等。</li>
+<li>持久层框架：JPA、MyBatis、jOOQ、R2DBC等。</li>
+<li>分布式：ZooKeeper、Dubbo等。</li>
+<li>NoSQL存储：Redis、MongoDB、Neo4j、Cassandra、Geodo、CouchBase等。</li>
+<li>全文检索引擎：Lucene、Solr、Elastichsearch等。</li>
+<li>SQL数据库存储：MySQL、PostgreSQL、Oracle等。</li>
+<li>Web服务器：Tomcat、Jetty、Undertow、Reactor Netty等</li>
+</ul>
+<h4 id="Spring-Boot的优点和特点"><a href="#Spring-Boot的优点和特点" class="headerlink" title="Spring Boot的优点和特点"></a>Spring Boot的优点和特点</h4><p>Spring Boot依然以Spring为核心，具有如下优点：</p>
+<ul>
+<li>Spring唯一的缺点就是“配置过多”，而Spring Boot为绝大部分第三方框架的快速整合提供了<strong>【自动配置】</strong>。因此当使用Spring Boot来整合第三方框架时，基本无需提供过多的基础配置。</li>
+<li>Spring Boot使用<strong>“约定优于配置(CoC)”</strong>的理念，针对各种框架提供了对应的<strong>Starter</strong>，只要添加该Starter即可完成第三方框架的自动整合（添加依赖JAR包）</li>
+</ul>
+<p>SpringBoot具有如下特性：</p>
+<ul>
+<li>内嵌Tomcat、Jetty或Undertow、Reactor Netty服务器，因此<strong>Spring Boot应用无需部署到其他服务器</strong>。</li>
+<li>Spring Boot应用可做成<strong>独立的Java应用程序——不需要是Web应用</strong>。意味着可通过 “java 主类”命令来运行该应用。</li>
+<li>尽可能地<strong>自动配置Spring及第三方框架</strong>。</li>
+<li>完全没有代码生成，也<strong>不需要XML配置</strong>。</li>
+<li>提供产品级<strong>监控功能</strong>（Spring Actuator），如运行状况检查和外部化配置等。</li>
+</ul>
+<blockquote>
+<p>【说明】</p>
+<ol>
+<li>不要夸大Spring Boot的功能。Spring Boot直译就是“Spring启动”，因此它的主要功能就是为Spring及第三方框架的快速启动提供自动配置。Spring Boot不属于<strong>功能型的框架</strong>，当Spring及第三方框架整合起来之后，Spring Boot的任务就完成了。发挥功能依然是前面列出的那些框架和技术，实际开发必须真正掌握前面列出的那些框架和技术。</li>
+<li>仅仅学习Spring Boot完全不够。以Spring Boot为核心，沿着Spring Boot所能整合的第三方框架、技术进行学习，将Spring Boot所能整合的第三方框架、技术都掌握，这样才算真正掌握了Spring Boot——这也就掌握了Java后端开发的技术大成。</li>
+</ol>
+</blockquote>
+]]></content>
+      <categories>
+        <category>SpringBoot</category>
+      </categories>
+      <tags>
+        <tag>SpringBoot</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Spring基础</title>
     <url>/2022/01/30/Java%E5%9F%BA%E7%A1%80/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">&#123;% aplayer title author url [picture_url, narrow, autoplay, width:xxx, lrc:xxx] %&#125;</span><br></pre></td></tr></table></figure>
@@ -15,9 +72,14 @@
 </iframe>
 
 
-    <div id="aplayer-uANxiKdE" class="aplayer aplayer-tag-marker meting-tag-marker" data-id="3986040" data-server="netease" data-type="song" data-mode="circulation" data-autoplay="false" data-mutex="true" data-listmaxheight="340px" data-preload="auto" data-theme="#555"></div>]]></content>
+    <div id="aplayer-TcTtxwot" class="aplayer aplayer-tag-marker meting-tag-marker" data-id="3986040" data-server="netease" data-type="song" data-mode="circulation" data-autoplay="false" data-mutex="true" data-listmaxheight="340px" data-preload="auto" data-theme="#555"></div>]]></content>
+      <categories>
+        <category>测试</category>
+        <category>生活</category>
+      </categories>
       <tags>
-        <tag>java spring</tag>
+        <tag>java</tag>
+        <tag>spring</tag>
       </tags>
   </entry>
 </search>

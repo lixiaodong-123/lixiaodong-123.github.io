@@ -21,26 +21,28 @@
   <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"qiuzhiblog.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="我们终此一生，就是要摆脱他人的期待，找到真正的自己。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="瑾瑜博客">
-<meta property="og:url" content="https://qiuzhiblog.cn/archives/index.html">
+<meta name="description" content="Spring的本质从本质上说，Spring就是一个“组件”容器，它负责创建并管理容器中的所有组件(也称为Bean)，以及管理组件之间的依赖关系。所以Spring的核心功能主要有两点：  管理所有组件（Component）： @Component（@Controller、@Service、@Repository） 完成依赖注入：  @Autowired  Java EE应用涉及到如下组件，有了Spr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot简介">
+<meta property="og:url" content="https://qiuzhiblog.cn/2022/02/15/SpringBoot%E7%AE%80%E4%BB%8B/index.html">
 <meta property="og:site_name" content="瑾瑜博客">
-<meta property="og:description" content="我们终此一生，就是要摆脱他人的期待，找到真正的自己。">
+<meta property="og:description" content="Spring的本质从本质上说，Spring就是一个“组件”容器，它负责创建并管理容器中的所有组件(也称为Bean)，以及管理组件之间的依赖关系。所以Spring的核心功能主要有两点：  管理所有组件（Component）： @Component（@Controller、@Service、@Repository） 完成依赖注入：  @Autowired  Java EE应用涉及到如下组件，有了Spr">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-15T09:38:10.000Z">
+<meta property="article:modified_time" content="2022-02-15T09:40:36.155Z">
 <meta property="article:author" content="李晓东">
-<meta property="article:tag" content="Java 后端">
+<meta property="article:tag" content="SpringBoot">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://qiuzhiblog.cn/archives/">
+<link rel="canonical" href="https://qiuzhiblog.cn/2022/02/15/SpringBoot%E7%AE%80%E4%BB%8B/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"archives/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://qiuzhiblog.cn/2022/02/15/SpringBoot%E7%AE%80%E4%BB%8B/","path":"2022/02/15/SpringBoot简介/","title":"SpringBoot简介"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>归档 | 瑾瑜博客</title>
+<title>SpringBoot简介 | 瑾瑜博客</title>
   
 
 
@@ -71,7 +73,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">瑾瑜博客</h1>
+      <p class="site-title">瑾瑜博客</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">技术博客</p>
@@ -143,7 +145,7 @@
     auto="https://y.qq.com/n/ryqq/playlist/8117002682.html">
     </meting-js> 
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -156,6 +158,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Spring%E7%9A%84%E6%9C%AC%E8%B4%A8"><span class="nav-number">1.</span> <span class="nav-text">Spring的本质</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91%E6%89%80%E6%B6%89%E5%8F%8A%E7%9A%84%E6%8A%80%E6%9C%AF"><span class="nav-number">2.</span> <span class="nav-text">Java后端开发所涉及的技术</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Spring-Boot%E7%9A%84%E4%BC%98%E7%82%B9%E5%92%8C%E7%89%B9%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">Spring Boot的优点和特点</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -244,69 +247,210 @@
 </noscript>
 
 
-    <div class="main-inner archive posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
-  
-  
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <span class="collection-header">嗯..! 目前共计 2 篇日志。 继续努力。</span>
-      </div>
 
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qiuzhiblog.cn/2022/02/15/SpringBoot%E7%AE%80%E4%BB%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="李晓东">
+      <meta itemprop="description" content="我们终此一生，就是要摆脱他人的期待，找到真正的自己。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瑾瑜博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SpringBoot简介
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2022</span>
+
+      <time title="创建时间：2022-02-15 17:38:10 / 修改时间：17:40:36" itemprop="dateCreated datePublished" datetime="2022-02-15T17:38:10+08:00">2022-02-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SpringBoot/" itemprop="url" rel="index"><span itemprop="name">SpringBoot</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h4 id="Spring的本质"><a href="#Spring的本质" class="headerlink" title="Spring的本质"></a>Spring的本质</h4><p>从本质上说，Spring就是一个“组件”容器，它负责创建并管理容器中的所有组件(也称为Bean)，以及管理组件之间的依赖关系。所以Spring的核心功能主要有两点：</p>
+<ul>
+<li><strong>管理所有组件</strong>（Component）： @Component（@Controller、@Service、@Repository）</li>
+<li><strong>完成依赖注入</strong>：  @Autowired</li>
+</ul>
+<p>Java EE应用涉及到如下组件，有了Spring之后，一切组件都交给Spring去管理、放到Spring 容器中。组件之间的依赖关系，也将交给Spring去负责维护。</p>
+<ul>
+<li>前端控制器组件</li>
+<li>安全组件（Spring Security,Shiro)</li>
+<li>业务逻辑组件</li>
+<li>消息组件（RabbitMQ、Kafka）</li>
+<li>DAO组件（Spring也称其为Repository）</li>
+<li>连接数据库的基础组件（如DataSource、ConnectionFactory、SessionFactory等）</li>
+</ul>
+<h4 id="Java后端开发所涉及的技术"><a href="#Java后端开发所涉及的技术" class="headerlink" title="Java后端开发所涉及的技术"></a>Java后端开发所涉及的技术</h4><ul>
+<li>前端MVC层：Spring WebFlux、Spring MVC、Struts 2（已被淘汰）等。</li>
+<li>安全领域：Spring Security、Shiro等。</li>
+<li>消息组件：ActiveMQ、RabbitMQ、Kafka等。</li>
+<li>缓存：JCache、EhCache、Hazelcast、Redis等。</li>
+<li>持久层框架：JPA、MyBatis、jOOQ、R2DBC等。</li>
+<li>分布式：ZooKeeper、Dubbo等。</li>
+<li>NoSQL存储：Redis、MongoDB、Neo4j、Cassandra、Geodo、CouchBase等。</li>
+<li>全文检索引擎：Lucene、Solr、Elastichsearch等。</li>
+<li>SQL数据库存储：MySQL、PostgreSQL、Oracle等。</li>
+<li>Web服务器：Tomcat、Jetty、Undertow、Reactor Netty等</li>
+</ul>
+<h4 id="Spring-Boot的优点和特点"><a href="#Spring-Boot的优点和特点" class="headerlink" title="Spring Boot的优点和特点"></a>Spring Boot的优点和特点</h4><p>Spring Boot依然以Spring为核心，具有如下优点：</p>
+<ul>
+<li>Spring唯一的缺点就是“配置过多”，而Spring Boot为绝大部分第三方框架的快速整合提供了<strong>【自动配置】</strong>。因此当使用Spring Boot来整合第三方框架时，基本无需提供过多的基础配置。</li>
+<li>Spring Boot使用<strong>“约定优于配置(CoC)”</strong>的理念，针对各种框架提供了对应的<strong>Starter</strong>，只要添加该Starter即可完成第三方框架的自动整合（添加依赖JAR包）</li>
+</ul>
+<p>SpringBoot具有如下特性：</p>
+<ul>
+<li>内嵌Tomcat、Jetty或Undertow、Reactor Netty服务器，因此<strong>Spring Boot应用无需部署到其他服务器</strong>。</li>
+<li>Spring Boot应用可做成<strong>独立的Java应用程序——不需要是Web应用</strong>。意味着可通过 “java 主类”命令来运行该应用。</li>
+<li>尽可能地<strong>自动配置Spring及第三方框架</strong>。</li>
+<li>完全没有代码生成，也<strong>不需要XML配置</strong>。</li>
+<li>提供产品级<strong>监控功能</strong>（Spring Actuator），如运行状况检查和外部化配置等。</li>
+</ul>
+<blockquote>
+<p>【说明】</p>
+<ol>
+<li>不要夸大Spring Boot的功能。Spring Boot直译就是“Spring启动”，因此它的主要功能就是为Spring及第三方框架的快速启动提供自动配置。Spring Boot不属于<strong>功能型的框架</strong>，当Spring及第三方框架整合起来之后，Spring Boot的任务就完成了。发挥功能依然是前面列出的那些框架和技术，实际开发必须真正掌握前面列出的那些框架和技术。</li>
+<li>仅仅学习Spring Boot完全不够。以Spring Boot为核心，沿着Spring Boot所能整合的第三方框架、技术进行学习，将Spring Boot所能整合的第三方框架、技术都掌握，这样才算真正掌握了Spring Boot——这也就掌握了Java后端开发的技术大成。</li>
+</ol>
+</blockquote>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2022-02-15T17:38:10+08:00"
-              content="2022-02-15">
-          02-15
-        </time>
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>Buy me a coffee</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="李晓东 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="李晓东 支付宝">
+        <span>支付宝</span>
       </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/02/15/SpringBoot%E7%AE%80%E4%BB%8B/" itemprop="url">
-            <span itemprop="name">SpringBoot简介</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2022-01-30T17:36:23+08:00"
-              content="2022-01-30">
-          01-30
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/01/30/Java%E5%9F%BA%E7%A1%80/" itemprop="url">
-            <span itemprop="name">Spring基础</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-
-    </div>
   </div>
-  
-  
-  
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>李晓东
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://qiuzhiblog.cn/2022/02/15/SpringBoot%E7%AE%80%E4%BB%8B/" title="SpringBoot简介">https://qiuzhiblog.cn/2022/02/15/SpringBoot简介/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SpringBoot/" rel="tag"># SpringBoot</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/01/30/Java%E5%9F%BA%E7%A1%80/" rel="prev" title="Spring基础">
+                  <i class="fa fa-chevron-left"></i> Spring基础
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
 
 </div>
   </main>
