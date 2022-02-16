@@ -6,7 +6,7 @@
   <link href="https://qiuzhiblog.cn/atom.xml" rel="self"/>
   
   <link href="https://qiuzhiblog.cn/"/>
-  <updated>2022-02-15T09:40:36.155Z</updated>
+  <updated>2022-02-16T11:10:19.769Z</updated>
   <id>https://qiuzhiblog.cn/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>SpringBoot入门</title>
+    <link href="https://qiuzhiblog.cn/2022/02/16/SpringBoot%E5%85%A5%E9%97%A8/"/>
+    <id>https://qiuzhiblog.cn/2022/02/16/SpringBoot%E5%85%A5%E9%97%A8/</id>
+    <published>2022-02-16T11:06:03.000Z</published>
+    <updated>2022-02-16T11:10:19.769Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;\assets\css\APlayer.min.css&quot;&gt;&lt;script src=&quot;\assets\js\APlayer.min.js&quot; cla</summary>
+      
+    
+    
+    
+    <category term="SpringBoot" scheme="https://qiuzhiblog.cn/categories/SpringBoot/"/>
+    
+    
+    <category term="SpringBoot" scheme="https://qiuzhiblog.cn/tags/SpringBoot/"/>
+    
+  </entry>
   
   <entry>
     <title>SpringBoot简介</title>
