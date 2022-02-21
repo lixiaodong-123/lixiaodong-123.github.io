@@ -15,7 +15,7 @@
 </iframe>
 
 
-    <div id="aplayer-HuaHOJit" class="aplayer aplayer-tag-marker meting-tag-marker" data-id="3986040" data-server="netease" data-type="song" data-mode="circulation" data-autoplay="false" data-mutex="true" data-listmaxheight="340px" data-preload="auto" data-theme="#555"></div>]]></content>
+    <div id="aplayer-xHgsIenW" class="aplayer aplayer-tag-marker meting-tag-marker" data-id="3986040" data-server="netease" data-type="song" data-mode="circulation" data-autoplay="false" data-mutex="true" data-listmaxheight="340px" data-preload="auto" data-theme="#555"></div>]]></content>
       <categories>
         <category>测试</category>
         <category>生活</category>
@@ -23,6 +23,236 @@
       <tags>
         <tag>java</tag>
         <tag>spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot外部配置源</title>
+    <url>/2022/02/19/SpringBoot%E5%A4%96%E9%83%A8%E9%85%8D%E7%BD%AE%E6%BA%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><p>Spring Boot 允许使用配置文件对应用程序进行配置，Spring Boot支持如下不同形式的配置源：</p>
+<ul>
+<li>属性文件（前面介绍的application.properties就是属性文件）。</li>
+<li>YAML文件（后缀可以是.yml或.yaml）。</li>
+<li>环境变量。</li>
+<li>命令行参数。</li>
+</ul>
+<p>获取这些外部化的属性主要有如下几种方式：</p>
+<ul>
+<li>使用**@Value注解**将属性值注入任何 Bean组件。</li>
+<li>使用Spring 的 <strong>Environment 抽象层</strong>进行访问。</li>
+<li>使用**@ConfigurationProperties注解**将一批特定属性绑定到指定Java对象。</li>
+</ul>
+<blockquote>
+<p>【说明】配置源和配置属性的关系：</p>
+<p><strong>配置源包含了配置文件</strong>，此外，配置源还包括：环境变量、系统属性、命令行的选项参数、JSON配置等</p>
+<p><img src="/2022/02/19/SpringBoot%E5%A4%96%E9%83%A8%E9%85%8D%E7%BD%AE%E6%BA%90/%E9%85%8D%E7%BD%AE%E6%BA%90%E5%92%8C%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E7%9A%84%E5%85%B3%E7%B3%BB.jpg"></p>
+</blockquote>
+<h4 id="外部配置源的加载顺序和优先级"><a href="#外部配置源的加载顺序和优先级" class="headerlink" title="外部配置源的加载顺序和优先级"></a>外部配置源的加载顺序和优先级</h4><ul>
+<li><p>加载顺序</p>
+<ul>
+<li><p>默认属性（通过<strong>SpringApplication.setDefaultProperties()方法</strong>指定）。</p>
+</li>
+<li><p>配置类（@Configuration修饰的类）上的、用**@PropertySource注解加载的属性文件**中的属性值。</p>
+</li>
+<li><p><strong>配置文件</strong>（如application.properties文件等）。</p>
+</li>
+<li><p><strong>RandomValuePropertySource</strong>，只包含random.*中的属性。</p>
+</li>
+<li><p>操作系统<strong>环境变量</strong>。</p>
+</li>
+<li><p>Java<strong>系统属性</strong>（System的getProperties()方法返回的属性）。</p>
+</li>
+<li><p>来自于 java:comp/env 的<strong>JNDI属性</strong>。   </p>
+</li>
+<li><p><strong>ServletContext的初始化参数</strong>（在web.xml文件中通过&lt;context-param…/&gt;元素设置的初始化参数）。</p>
+<blockquote>
+<p>上面的这两项只有在Web服务器或应用服务器中才有用，因此，只有把 Spring Boot应用部署到 Web服务器或应用服务器中才能使用这两项。</p>
+</blockquote>
+</li>
+<li><p><strong>ServletConfig的初始化参数</strong>（在web.xml文件通过&lt;init-param…/&gt;元素设置的初始化参数或通过@Servlet注解设置的初始化参数）。</p>
+</li>
+<li><p>来自<strong>SPRING_APPLICATION_JSON的属性</strong>（嵌套在环境变量或系统属性中JSON文本）</p>
+</li>
+<li><p><strong>命令行参数</strong>。Spring Boot会自动提取命令行参数中的选项参数，如果这些选项参数对Spring Boot是有意义的，如server.port 等选项参数，Spring Boot就会用该选项参数的值覆盖配置文件中所指定的属性值。如果<strong>不希望将命令行的选项属性添加到配置环境</strong>中，则可调用SpringApplication对象的<strong>setAddCommandLineProperties(false)方法</strong>来禁用该功能。</p>
+</li>
+<li><p>测试用例类上通过**@SpringBootTest注解的properties所指定的属性**。</p>
+</li>
+<li><p>测试用例类上通过**@TestPropertySource注解加载的属性文件中的属性值**。</p>
+</li>
+<li><p>如果Spring Boot的<strong>devtools工具处于激活状态</strong>，用户<strong>Home目录中.config/spring-boot/子目录下</strong>spring-boot-devtools.properties或spring-boot-devtools.yml文件设置的属性。</p>
+</li>
+</ul>
+</li>
+<li><p>优先级</p>
+<p>后加载的配置属性，会覆盖先加载的配置属性，因此后加载的配置属性的优先级更高，</p>
+<p>测试配置 &gt; 命令行参数 &gt; JSON配置 &gt; 系统属性 &gt; 环境变量 &gt; 随机配置 &gt; 配置文件 &gt; 配置类 &gt; 默认属性</p>
+</li>
+</ul>
+<h4 id="配置文件的加载顺序"><a href="#配置文件的加载顺序" class="headerlink" title="配置文件的加载顺序"></a>配置文件的加载顺序</h4><ul>
+<li>基本原则：<strong>JAR包外临时指定的配置文件的优先级高于JAR包内配置文件的优先级</strong>；特定Profile对应的配置文件的优先级<strong>高于通用配置文件的优先级</strong>。</li>
+<li>加载顺序：<ul>
+<li>JAR包<strong>内</strong>的application.properties（或application.yml）。</li>
+<li>JAR包内的<strong>application-{profile}.properties</strong>（或application-{profile}.yml），这是特定Profile对应的配置文件。</li>
+<li>JAR包外<strong>临时指定</strong>的application.properties（或application.yml）。</li>
+<li>JAR包<strong>外临时指定</strong>的application-{profile}.properties（或application-{profile}.yml）。</li>
+</ul>
+</li>
+</ul>
+<h4 id="利用JSON参数配置"><a href="#利用JSON参数配置" class="headerlink" title="利用JSON参数配置"></a>利用JSON参数配置</h4><p>Spring Boot还支持一个特殊的<strong>系统属性(环境变量)：spring.application.json ( SPRING_APPLICATION_JSON)<strong>，通过这个特殊的系统属性或环境变量可以传入一段JSON 文本，而</strong>这段JSON文本将会被解析成配置属性</strong>。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		System.setProperty(<span class="string">&quot;spring.application.json&quot;</span>,</span><br><span class="line">				<span class="string">&quot;&#123;\&quot;user\&quot;: &#123;\&quot;name\&quot;: \&quot;fkjava\&quot;, \&quot;age\&quot;: 21, \&quot;addrs\&quot;: [\&quot;guangzhou\&quot;, \&quot;深圳\&quot;]&#125;&#125;&quot;</span>);</span><br><span class="line">		SpringApplication.run(App.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>【注意】JSON文档需要放在引号中，因此JSON文档的内容中双引号往往就需要转义。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestController</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="comment">// 读取外部的配置属性来完成依赖注入</span></span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.name&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.age&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.addrs[0]&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String addr1;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.addrs[1]&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String addr2;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@GetMapping(&quot;/test&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Map <span class="title">test</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Map.of(<span class="string">&quot;name&quot;</span>, name, <span class="string">&quot;age&quot;</span>, age, <span class="string">&quot;addr1&quot;</span>, addr1, <span class="string">&quot;addr2&quot;</span>, addr2);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也可以通过VM选项的-D选项来设置系统属性：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">-Dspring.application.json=<span class="string">&quot;&#123;\&quot;user\&quot;:&#123;\&quot;name\&quot;: \&quot;fkjava\&quot;, \&quot;age\&quot;: 19, \&quot;addrs\&quot;: [\&quot;佛山\&quot;, \&quot;江门\&quot;]&#125;&#125;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>还可以通过命令行参数来设置spring.application.json系统属性：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">--spring.application.json=<span class="string">&quot;&#123;\&quot;user\&quot;:&#123;\&quot;name\&quot;: \&quot;fkjava\&quot;, \&quot;age\&quot;: 19, \&quot;addrs\&quot;: [\&quot;佛山\&quot;, \&quot;江门\&quot;]&#125;&#125;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2022/02/19/SpringBoot%E5%A4%96%E9%83%A8%E9%85%8D%E7%BD%AE%E6%BA%90/VM%E9%80%89%E9%A1%B9%E5%92%8C%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0.jpg"></p>
+<h4 id="使用YAML配置文件"><a href="#使用YAML配置文件" class="headerlink" title="使用YAML配置文件"></a>使用YAML配置文件</h4><p>yaml文件本质上和.properties文件的是一样的。YAML是JSON格式的超集，它能以层次格式来存储配置属性。Spring Boot使用<strong>SnakeYAML 来解析YAML文件</strong>，由于<strong>spring-boot-starter自动依赖SnakeYAML</strong>，因此只要为项目添加了spring-boot-starter依赖(几乎所有Spring Boot项目都会添加)，SpringApplication即可使用 SnakeYAML解析YAML文件。</p>
+<ul>
+<li><p>properties文件使用.分隔符作为结构化的表现：</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">spring.datasource.url</span>=<span class="string">a</span></span><br><span class="line"><span class="meta">spring.datasource.user</span>=<span class="string">b</span></span><br><span class="line"><span class="meta">spring.datasource.password</span>=<span class="string">c</span></span><br><span class="line"><span class="meta">server.name</span>=<span class="string">fkjava</span></span><br><span class="line"><span class="meta">server.addrs[0]</span>=<span class="string">guangzhou</span></span><br><span class="line"><span class="meta">server.addrs[1]</span>=<span class="string">shenzhen</span></span><br><span class="line"><span class="meta">fkjava.user.names</span>=<span class="string">fkit, crazyit</span></span><br></pre></td></tr></table></figure></li>
+<li><p>YAML文件使用缩进和冒号作为结构化的表现，且属性值与key之间也用冒号隔开：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">a</span></span><br><span class="line">    <span class="attr">user:</span> <span class="string">b</span></span><br><span class="line">    <span class="attr">password:</span> <span class="string">c</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">fkjava</span></span><br><span class="line">  <span class="attr">addrs:</span> </span><br><span class="line">    <span class="bullet">-</span> <span class="string">guangzhou</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">shenzhen</span></span><br><span class="line"><span class="attr">fkjava:</span></span><br><span class="line">  <span class="attr">user:</span></span><br><span class="line">    <span class="attr">names:</span> <span class="string">fkit,</span> <span class="string">crazyit</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<blockquote>
+<p>【备注】无论是properties文件，还是YAML配置文件，都可使用逗号隔开的多个值来作为List或数组。</p>
+</blockquote>
+<p> 加载自定义的配置文件的方式：</p>
+<ul>
+<li><p>PropertiesFactoryBean | YamlPropertiesFactoryBean：将属性文件或YAML文件加载成<strong>Properties对象</strong>。</p>
+</li>
+<li><p>YamlMapFactoryBean：它将YAML文件加载成<strong>Map对象</strong>。</p>
+<p>如果<strong>仅仅需要加载自定义的YAML文件</strong>，在普通组件中使用这些配置属性，并不需要将YAML文件中的属性添加到配置环境中，那么只要在容器中配置一个YamlPropertiesFactoryBean 工厂Bean或YamlMapFactoryBean工厂 Bean，它们就会自动读取YAML文件，并将其中的配置内容加载为Properties对象或Map对象。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">crazy.yml内容：</span></span><br><span class="line"></span><br><span class="line"><span class="attr">crazyit:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">孙悟空</span></span><br><span class="line">  <span class="attr">addrs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">花果山</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">西天取经路</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">fk.yml文件：</span></span><br><span class="line"></span><br><span class="line"><span class="attr">user:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">fkjava</span></span><br><span class="line">  <span class="attr">addr:</span></span><br><span class="line">    <span class="attr">detail:</span> <span class="string">广州市</span></span><br><span class="line">    <span class="attr">postcode:</span> <span class="number">510000</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FkConfig</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> YamlPropertiesFactoryBean <span class="title">crazyitProps</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> fact = <span class="keyword">new</span> YamlPropertiesFactoryBean();</span><br><span class="line">		<span class="comment">// 加载指定的自定义配置文件</span></span><br><span class="line">		fact.setResources(<span class="keyword">new</span> ClassPathResource(<span class="string">&quot;fk/crazy.yml&quot;</span>));</span><br><span class="line">		<span class="keyword">return</span> fact;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.name&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String userName;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.addr.detail&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String userDetail;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.addr.postcode&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String userPostcode;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 传统的依赖注入，将容器中crazyitProps Bean注入该field,即为上面程序的方法名作为属性值</span></span><br><span class="line">	<span class="meta">@Resource(name = &quot;crazyitProps&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> Properties crazyitProps;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="meta">@GetMapping(&quot;/hello&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">hello</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Map.of(<span class="string">&quot;userName&quot;</span>, userName, <span class="string">&quot;userDetail&quot;</span>,</span><br><span class="line">				userDetail, <span class="string">&quot;userPostcode&quot;</span>, userPostcode, <span class="string">&quot;props&quot;</span>, crazyitProps);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>PropertiesPropertySourceLoader | YamlPropertySourceLoader：将属性文件或YAML文件加载成<strong>PropertySource</strong>。通常用于在配置环境后处理器中使用，接下来可将PropertySource添加到配置环境中。</p>
+</li>
+</ul>
+<blockquote>
+<p>@PropertySource注解和@TestPropertySource注解只能读取属性文件（propertie文件），告诉Spring Boot要去加载哪些额外的属性文件。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义配置环境后处理器</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FkEnvPostProcessor</span> <span class="keyword">implements</span> <span class="title">EnvironmentPostProcessor</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="comment">// 使用PropertiesPropertySourceLoader | YamlPropertySourceLoader来加载自定义的配置文件</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> YamlPropertySourceLoader loader = <span class="keyword">new</span> YamlPropertySourceLoader();</span><br><span class="line"></span><br><span class="line">	<span class="meta">@SneakyThrows</span></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postProcessEnvironment</span><span class="params">(ConfigurableEnvironment environment, SpringApplication application)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="comment">// 使用YamlPropertySourceLoader来加载自定义的配置文件</span></span><br><span class="line">		PropertySource source = loader.load(<span class="string">&quot;custom&quot;</span>, <span class="keyword">new</span> ClassPathResource(<span class="string">&quot;fk/fk.yml&quot;</span>)).get(<span class="number">0</span>);</span><br><span class="line">		System.out.println(source.getProperty(<span class="string">&quot;user.name&quot;</span>));</span><br><span class="line">		System.out.println(source.getProperty(<span class="string">&quot;user.addr.detail&quot;</span>));</span><br><span class="line">		System.out.println(source.getProperty(<span class="string">&quot;user.addr.postcode&quot;</span>));</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 将自定义的配置文件中的信息添加到配置环境中</span></span><br><span class="line">		environment.getPropertySources().addLast(source);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">org.springframework.boot.env.EnvironmentPostProcessor</span>=<span class="string"></span></span><br><span class="line">                                       <span class="attr">org.crazyit.postprocessor.FkEnvPostProcessor</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="改变配置文件的位置"><a href="#改变配置文件的位置" class="headerlink" title="改变配置文件的位置"></a>改变配置文件的位置</h4><p>在默认情况下，Spring Boot会自动按如下顺序加载默认的配置又件，后加载的属性文件会覆盖先加载的属性文件，因此可认为后加载的属性文件具有更高的优先级。</p>
+<ul>
+<li><p><strong>类加载路径（resources目录）</strong>application.properties|yml  （相当于JAR包内）—-optional: classpath:/</p>
+</li>
+<li><p><strong>类加载路径下的/config包</strong>(resources/config)。 （相当于JAR包内）——–optional: classpath:/config/</p>
+<blockquote>
+<p>【备注】：上面类加载路径及载路径下config子目录，当应用被打包后，它们就被打包到了JAR包中。</p>
+</blockquote>
+</li>
+<li><p><strong>当前路径</strong>（相当于JAR包外）—–optional: file:./</p>
+<p>c:\abc\xyz&gt; java -jar test.jar（Spring Boot应用）——执行该java命令所在的目录（c:\abc\xyz）下的application.properties|yml</p>
+</li>
+<li><p><strong>当前路径下的/config子目录</strong>（相当于JAR包外）——-optional: file:./config/</p>
+</li>
+<li><p><strong>当前路径下的/config子目录的任意直接子目录</strong>，也就是/config/abc/、/config/xyz/等，不能是/config/abc/def/。（相当于JAR包外），实际上就是optional:file:./config/*/ </p>
+</li>
+</ul>
+<blockquote>
+<p>【说明】3个要点：</p>
+<ol>
+<li>运行Spring Boot应用的当前目录下的配置文件会覆盖JAR包中原有的配置文件——方便部署人员去添加自己的配置文件来覆盖Spring Boot应用中原有的配置。</li>
+<li>无论是类加载路径中（JAR包），还是当前目录下（JAR包外），config子目录下配置文件总会被自动加载，而且优先级更高。</li>
+<li>当前目录下，config的直接子目录下（config/abc、config/xyz）的配置文件的优先级是最高的。</li>
+</ol>
+</blockquote>
+<p>如果想改变这种默认行为，Spring Boot可通过如下系统属性（或环境变量，或命令行参数)来改变配置文件的位置</p>
+<ul>
+<li><p><strong>spring.config.name：改变配置文件的文件名，默认是 application</strong>。如果用OS环境变量来设置，则该属性对应于SPRING_CONFIG_NAME环境变量名， 它的默认值决定了Spring Boot要加载的配置文件的默认的文件名。</p>
+</li>
+<li><p><strong>spring.config.location：改变配置文件的加载路径</strong>。如果用OS 环境变量来设置，则该属性对应于SPRING_CONFIG_LOCATION 环境变量名。其默认值是5个路径：</p>
+<ul>
+<li>optional: classpath:/</li>
+<li>optional: classpath:/config/</li>
+<li>optional: file:./</li>
+<li>optional: file:./config/</li>
+<li>optional: file:./config/*/ </li>
+</ul>
+<blockquote>
+<p>【说明】</p>
+<ol>
+<li>使用通配符有如下限制：<ul>
+<li><strong>通配符只能在外部路径中使用</strong>，例如file:前缀就表示使用文件系统的当前路径；classpath:前缀的路径不能使用通配符。</li>
+<li><strong>每个加载路径只能在最后面使用一个通配符</strong>，不能写成file:./* /* /。</li>
+</ul>
+</li>
+<li><strong>optional:前缀用于告诉Spring Boot不要检查该路径下是否存在配置文件，如果该路径下存在配置文件就加载，否则就忽略该路径</strong>。如果不添加optional:前缀，那么 Spring Boot 会强制检查该路径下是否存在配置文件，若该路径下不存在任何配置文件，Spring Boot将会抛出ConfigDataLocationNotFoundException异常。</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>spring.confg.additional-location：添加配置文件的加载路径，不会覆盖原有的配置文件的加载路径</strong>。(增加而非替换)</p>
+</li>
+</ul>
+<blockquote>
+<p>【注意】<strong>不要尝试使用Spring Boot配置属性来设置</strong>spring.config.name、spring.config.location、spring.config.additional-location属性，因为这几个属性的加载时机非常早，所以只能通过系统环境变量、系统属性或命令行参数来设置。</p>
+</blockquote>
+<h4 id="导入额外的配置文件"><a href="#导入额外的配置文件" class="headerlink" title="导入额外的配置文件"></a>导入额外的配置文件</h4><p>在Spring容器刷新之后，Spring Boot还可使用如下方式导入额外的配置文件：</p>
+<ul>
+<li><p>使用@PropertySource注解导入额外的属性文件。</p>
+<blockquote>
+<p>【注意】@PropertySource注解去加载属性文件时，<strong>默认所使用的字符集是操作系统相关的</strong>。如果你保存属性文件使用了<strong>UTF-8字符集，使用该注解时也需要通过encoding属性来指定对应的字符集</strong>。</p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">crazy.yml文件内容：</span></span><br><span class="line"></span><br><span class="line"><span class="attr">crazyit:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">孙悟空</span></span><br><span class="line">  <span class="attr">addrs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">花果山</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">西天取经路</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">fk.properties内容：</span></span><br><span class="line"></span><br><span class="line"><span class="meta">user.name</span>=<span class="string">fkjava</span></span><br><span class="line"><span class="meta">user.addr.detail</span>=<span class="string">广州市</span></span><br><span class="line"><span class="meta">user.addr.postcode</span>=<span class="string">510000</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> org.crazyit;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.SpringApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.PropertySource;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="comment">// 指定加载自定义的fk/fk.properties配置文件</span></span><br><span class="line"><span class="meta">@PropertySource(value = &quot;classpath:/fk/fk.properties&quot;, encoding = &quot;utf-8&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		SpringApplication.run(App.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.name&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String userName;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.addr.detail&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String userDetail;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.addr.postcode&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String userPostcode;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;crazyit.name&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String crazyitName;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;crazyit.addrs[0]&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String crazyitAdds1;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;crazyit.addrs[1]&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String crazyitAdds2;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@GetMapping(&quot;/hello&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">hello</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Map.of(<span class="string">&quot;userName&quot;</span>, userName, <span class="string">&quot;userDetail&quot;</span>,</span><br><span class="line">				userDetail, <span class="string">&quot;userPostcode&quot;</span>, userPostcode, <span class="string">&quot;crazyitName&quot;</span>,</span><br><span class="line">				crazyitName, <span class="string">&quot;crazyitAdds1&quot;</span>, crazyitAdds1,</span><br><span class="line">				<span class="string">&quot;crazyitAdds2&quot;</span>, crazyitAdds2);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>使用spring.config.import属性导入额外的配置文件(包括属性文件和YAML 文件)。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">application.yml内容：</span></span><br><span class="line"></span><br><span class="line"><span class="attr">fkjava:</span></span><br><span class="line">  <span class="attr">server:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">&quot;疯狂科技服务器&quot;</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">9000</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">config:</span></span><br><span class="line">    <span class="comment"># 指定导入类加载路径下fk/fk.yml文件</span></span><br><span class="line">    <span class="attr">import:</span> <span class="string">optional:classpath:/fk/fk.yml</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="使用占位符引用其他配置属性"><a href="#使用占位符引用其他配置属性" class="headerlink" title="使用占位符引用其他配置属性"></a>使用占位符引用其他配置属性</h4><p>在配置文件中<strong>可通过占位符（${}）的方式来引用已定义的属性，或者引用其他配置源</strong>（如系统属性、环境变量、命令参数等)配置的属性。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="string">$&#123;port&#125;</span></span><br><span class="line"><span class="attr">app:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">疯狂Spring</span> <span class="string">Boot终极讲义</span></span><br><span class="line">  <span class="attr">description:</span> <span class="string">$&#123;app.name&#125;是一本很优秀的图书</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="引用构建文件中的属性"><a href="#引用构建文件中的属性" class="headerlink" title="引用构建文件中的属性"></a>引用构建文件中的属性</h4><p>SpringBoot还允许配置文件读取构建文件（pom.xml或者build.gradle）中的属性。</p>
+<ul>
+<li><p>对于pom文件： 使用@属性名@引用pom.xml文件中配置属性</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8181</span></span><br><span class="line"><span class="comment"># 应用pom.xml文件中的配置属性</span></span><br><span class="line"><span class="attr">app:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">@name@</span></span><br><span class="line">  <span class="attr">version:</span> <span class="string">项目版本：@version@</span></span><br><span class="line"><span class="attr">java:</span></span><br><span class="line">  <span class="attr">version:</span> <span class="string">@java.version@</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;app.name&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String appName;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;app.version&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String appVersion;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;java.version&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String javaVersion;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@GetMapping(&quot;/hello&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">hello</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Map.of(<span class="string">&quot;appName&quot;</span>, appName, <span class="string">&quot;appVersion&quot;</span>,</span><br><span class="line">				appVersion, <span class="string">&quot;javaVersion&quot;</span>, javaVersion);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p>对于build文件： 首先需要在build.gradle文件中对Java插件的processResources进行配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 配置Java插件的processResources Task</span><br><span class="line">   processResources &#123;</span><br><span class="line">expand(project.properties)</span><br><span class="line">   &#125;</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+
+<p>然后将这段配置添加到原有的 build.gradle文件的最后，接下来即可在配置文件中通过“${属性名}”的形式引用build.gradle文件中的属性，  此时，原有的占位符格式需要进行转义：\${..}。</p>
+</li>
+</ul>
+<h4 id="配置随机值"><a href="#配置随机值" class="headerlink" title="配置随机值"></a>配置随机值</h4><p>有些时候（比如出于测试的需要)，需要为应用配置各种随机值，包括随机整数、UUID等，它们都可通过Spring Boot的 <strong>RandomValuePropertySource</strong>来配置。实际上，在配置文件中配置随机值甚至无须知晓RandomValuePropertySource的存在，只要在配置文件中<strong>使用${random.xxx}的形式即可生成各种随机值</strong>，不过这个random就是RandomValuePropertySource，因此random能使用哪些属性完全取决于RandomValuePropertySource 的API。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="string">$&#123;random.int(5000,9000)&#125;</span></span><br><span class="line"><span class="comment"># 应用pom.xml文件中的配置属性</span></span><br><span class="line"><span class="attr">app:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">$&#123;random.uuid&#125;</span></span><br><span class="line">  <span class="attr">desc:</span> <span class="string">$&#123;app.name&#125;是一个很酷的应用</span></span><br><span class="line"><span class="attr">java:</span></span><br><span class="line">  <span class="attr">version:</span> <span class="string">@java.version@</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>【注意】当你用int()或者long()来生成带范围的随机值时(比如第一个)，用于分割范围的逗号的前后都不能有空格。</p>
+</blockquote>
+<p>【总结】配置文件中引用其他属性</p>
+<ol>
+<li><p>用占位符引用已有的配置属性。  ${}</p>
+</li>
+<li><p>引用生成文件中的配置属性。</p>
+<p>​    Maven： @属性@<br>​    Gradle：  ${}, 此时对占位符引用要进行转义。</p>
+</li>
+<li><p>引用随机值。 ${random.int|long|uuid}</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>SpringBoot</category>
+      </categories>
+      <tags>
+        <tag>SpringBoot</tag>
       </tags>
   </entry>
   <entry>
@@ -613,236 +843,6 @@
 <li>仅仅学习Spring Boot完全不够。以Spring Boot为核心，沿着Spring Boot所能整合的第三方框架、技术进行学习，将Spring Boot所能整合的第三方框架、技术都掌握，这样才算真正掌握了Spring Boot——这也就掌握了Java后端开发的技术大成。</li>
 </ol>
 </blockquote>
-]]></content>
-      <categories>
-        <category>SpringBoot</category>
-      </categories>
-      <tags>
-        <tag>SpringBoot</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SpringBoot外部配置源</title>
-    <url>/2022/02/19/SpringBoot%E5%A4%96%E9%83%A8%E9%85%8D%E7%BD%AE%E6%BA%90/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><p>Spring Boot 允许使用配置文件对应用程序进行配置，Spring Boot支持如下不同形式的配置源：</p>
-<ul>
-<li>属性文件（前面介绍的application.properties就是属性文件）。</li>
-<li>YAML文件（后缀可以是.yml或.yaml）。</li>
-<li>环境变量。</li>
-<li>命令行参数。</li>
-</ul>
-<p>获取这些外部化的属性主要有如下几种方式：</p>
-<ul>
-<li>使用**@Value注解**将属性值注入任何 Bean组件。</li>
-<li>使用Spring 的 <strong>Environment 抽象层</strong>进行访问。</li>
-<li>使用**@ConfigurationProperties注解**将一批特定属性绑定到指定Java对象。</li>
-</ul>
-<blockquote>
-<p>【说明】配置源和配置属性的关系：</p>
-<p><strong>配置源包含了配置文件</strong>，此外，配置源还包括：环境变量、系统属性、命令行的选项参数、JSON配置等</p>
-<p><img src="/2022/02/19/SpringBoot%E5%A4%96%E9%83%A8%E9%85%8D%E7%BD%AE%E6%BA%90/%E9%85%8D%E7%BD%AE%E6%BA%90%E5%92%8C%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E7%9A%84%E5%85%B3%E7%B3%BB.jpg"></p>
-</blockquote>
-<h4 id="外部配置源的加载顺序和优先级"><a href="#外部配置源的加载顺序和优先级" class="headerlink" title="外部配置源的加载顺序和优先级"></a>外部配置源的加载顺序和优先级</h4><ul>
-<li><p>加载顺序</p>
-<ul>
-<li><p>默认属性（通过<strong>SpringApplication.setDefaultProperties()方法</strong>指定）。</p>
-</li>
-<li><p>配置类（@Configuration修饰的类）上的、用**@PropertySource注解加载的属性文件**中的属性值。</p>
-</li>
-<li><p><strong>配置文件</strong>（如application.properties文件等）。</p>
-</li>
-<li><p><strong>RandomValuePropertySource</strong>，只包含random.*中的属性。</p>
-</li>
-<li><p>操作系统<strong>环境变量</strong>。</p>
-</li>
-<li><p>Java<strong>系统属性</strong>（System的getProperties()方法返回的属性）。</p>
-</li>
-<li><p>来自于 java:comp/env 的<strong>JNDI属性</strong>。   </p>
-</li>
-<li><p><strong>ServletContext的初始化参数</strong>（在web.xml文件中通过&lt;context-param…/&gt;元素设置的初始化参数）。</p>
-<blockquote>
-<p>上面的这两项只有在Web服务器或应用服务器中才有用，因此，只有把 Spring Boot应用部署到 Web服务器或应用服务器中才能使用这两项。</p>
-</blockquote>
-</li>
-<li><p><strong>ServletConfig的初始化参数</strong>（在web.xml文件通过&lt;init-param…/&gt;元素设置的初始化参数或通过@Servlet注解设置的初始化参数）。</p>
-</li>
-<li><p>来自<strong>SPRING_APPLICATION_JSON的属性</strong>（嵌套在环境变量或系统属性中JSON文本）</p>
-</li>
-<li><p><strong>命令行参数</strong>。Spring Boot会自动提取命令行参数中的选项参数，如果这些选项参数对Spring Boot是有意义的，如server.port 等选项参数，Spring Boot就会用该选项参数的值覆盖配置文件中所指定的属性值。如果<strong>不希望将命令行的选项属性添加到配置环境</strong>中，则可调用SpringApplication对象的<strong>setAddCommandLineProperties(false)方法</strong>来禁用该功能。</p>
-</li>
-<li><p>测试用例类上通过**@SpringBootTest注解的properties所指定的属性**。</p>
-</li>
-<li><p>测试用例类上通过**@TestPropertySource注解加载的属性文件中的属性值**。</p>
-</li>
-<li><p>如果Spring Boot的<strong>devtools工具处于激活状态</strong>，用户<strong>Home目录中.config/spring-boot/子目录下</strong>spring-boot-devtools.properties或spring-boot-devtools.yml文件设置的属性。</p>
-</li>
-</ul>
-</li>
-<li><p>优先级</p>
-<p>后加载的配置属性，会覆盖先加载的配置属性，因此后加载的配置属性的优先级更高，</p>
-<p>测试配置 &gt; 命令行参数 &gt; JSON配置 &gt; 系统属性 &gt; 环境变量 &gt; 随机配置 &gt; 配置文件 &gt; 配置类 &gt; 默认属性</p>
-</li>
-</ul>
-<h4 id="配置文件的加载顺序"><a href="#配置文件的加载顺序" class="headerlink" title="配置文件的加载顺序"></a>配置文件的加载顺序</h4><ul>
-<li>基本原则：<strong>JAR包外临时指定的配置文件的优先级高于JAR包内配置文件的优先级</strong>；特定Profile对应的配置文件的优先级<strong>高于通用配置文件的优先级</strong>。</li>
-<li>加载顺序：<ul>
-<li>JAR包<strong>内</strong>的application.properties（或application.yml）。</li>
-<li>JAR包内的<strong>application-{profile}.properties</strong>（或application-{profile}.yml），这是特定Profile对应的配置文件。</li>
-<li>JAR包外<strong>临时指定</strong>的application.properties（或application.yml）。</li>
-<li>JAR包<strong>外临时指定</strong>的application-{profile}.properties（或application-{profile}.yml）。</li>
-</ul>
-</li>
-</ul>
-<h4 id="利用JSON参数配置"><a href="#利用JSON参数配置" class="headerlink" title="利用JSON参数配置"></a>利用JSON参数配置</h4><p>Spring Boot还支持一个特殊的<strong>系统属性(环境变量)：spring.application.json ( SPRING_APPLICATION_JSON)<strong>，通过这个特殊的系统属性或环境变量可以传入一段JSON 文本，而</strong>这段JSON文本将会被解析成配置属性</strong>。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		System.setProperty(<span class="string">&quot;spring.application.json&quot;</span>,</span><br><span class="line">				<span class="string">&quot;&#123;\&quot;user\&quot;: &#123;\&quot;name\&quot;: \&quot;fkjava\&quot;, \&quot;age\&quot;: 21, \&quot;addrs\&quot;: [\&quot;guangzhou\&quot;, \&quot;深圳\&quot;]&#125;&#125;&quot;</span>);</span><br><span class="line">		SpringApplication.run(App.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>【注意】JSON文档需要放在引号中，因此JSON文档的内容中双引号往往就需要转义。</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestController</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="comment">// 读取外部的配置属性来完成依赖注入</span></span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.name&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.age&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.addrs[0]&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String addr1;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.addrs[1]&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String addr2;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@GetMapping(&quot;/test&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Map <span class="title">test</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Map.of(<span class="string">&quot;name&quot;</span>, name, <span class="string">&quot;age&quot;</span>, age, <span class="string">&quot;addr1&quot;</span>, addr1, <span class="string">&quot;addr2&quot;</span>, addr2);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>也可以通过VM选项的-D选项来设置系统属性：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">-Dspring.application.json=<span class="string">&quot;&#123;\&quot;user\&quot;:&#123;\&quot;name\&quot;: \&quot;fkjava\&quot;, \&quot;age\&quot;: 19, \&quot;addrs\&quot;: [\&quot;佛山\&quot;, \&quot;江门\&quot;]&#125;&#125;&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>还可以通过命令行参数来设置spring.application.json系统属性：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">--spring.application.json=<span class="string">&quot;&#123;\&quot;user\&quot;:&#123;\&quot;name\&quot;: \&quot;fkjava\&quot;, \&quot;age\&quot;: 19, \&quot;addrs\&quot;: [\&quot;佛山\&quot;, \&quot;江门\&quot;]&#125;&#125;&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/02/19/SpringBoot%E5%A4%96%E9%83%A8%E9%85%8D%E7%BD%AE%E6%BA%90/VM%E9%80%89%E9%A1%B9%E5%92%8C%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0.jpg"></p>
-<h4 id="使用YAML配置文件"><a href="#使用YAML配置文件" class="headerlink" title="使用YAML配置文件"></a>使用YAML配置文件</h4><p>yaml文件本质上和.properties文件的是一样的。YAML是JSON格式的超集，它能以层次格式来存储配置属性。Spring Boot使用<strong>SnakeYAML 来解析YAML文件</strong>，由于<strong>spring-boot-starter自动依赖SnakeYAML</strong>，因此只要为项目添加了spring-boot-starter依赖(几乎所有Spring Boot项目都会添加)，SpringApplication即可使用 SnakeYAML解析YAML文件。</p>
-<ul>
-<li><p>properties文件使用.分隔符作为结构化的表现：</p>
-<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">spring.datasource.url</span>=<span class="string">a</span></span><br><span class="line"><span class="meta">spring.datasource.user</span>=<span class="string">b</span></span><br><span class="line"><span class="meta">spring.datasource.password</span>=<span class="string">c</span></span><br><span class="line"><span class="meta">server.name</span>=<span class="string">fkjava</span></span><br><span class="line"><span class="meta">server.addrs[0]</span>=<span class="string">guangzhou</span></span><br><span class="line"><span class="meta">server.addrs[1]</span>=<span class="string">shenzhen</span></span><br><span class="line"><span class="meta">fkjava.user.names</span>=<span class="string">fkit, crazyit</span></span><br></pre></td></tr></table></figure></li>
-<li><p>YAML文件使用缩进和冒号作为结构化的表现，且属性值与key之间也用冒号隔开：</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">a</span></span><br><span class="line">    <span class="attr">user:</span> <span class="string">b</span></span><br><span class="line">    <span class="attr">password:</span> <span class="string">c</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">fkjava</span></span><br><span class="line">  <span class="attr">addrs:</span> </span><br><span class="line">    <span class="bullet">-</span> <span class="string">guangzhou</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">shenzhen</span></span><br><span class="line"><span class="attr">fkjava:</span></span><br><span class="line">  <span class="attr">user:</span></span><br><span class="line">    <span class="attr">names:</span> <span class="string">fkit,</span> <span class="string">crazyit</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<blockquote>
-<p>【备注】无论是properties文件，还是YAML配置文件，都可使用逗号隔开的多个值来作为List或数组。</p>
-</blockquote>
-<p> 加载自定义的配置文件的方式：</p>
-<ul>
-<li><p>PropertiesFactoryBean | YamlPropertiesFactoryBean：将属性文件或YAML文件加载成<strong>Properties对象</strong>。</p>
-</li>
-<li><p>YamlMapFactoryBean：它将YAML文件加载成<strong>Map对象</strong>。</p>
-<p>如果<strong>仅仅需要加载自定义的YAML文件</strong>，在普通组件中使用这些配置属性，并不需要将YAML文件中的属性添加到配置环境中，那么只要在容器中配置一个YamlPropertiesFactoryBean 工厂Bean或YamlMapFactoryBean工厂 Bean，它们就会自动读取YAML文件，并将其中的配置内容加载为Properties对象或Map对象。</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">crazy.yml内容：</span></span><br><span class="line"></span><br><span class="line"><span class="attr">crazyit:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">孙悟空</span></span><br><span class="line">  <span class="attr">addrs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">花果山</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">西天取经路</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">fk.yml文件：</span></span><br><span class="line"></span><br><span class="line"><span class="attr">user:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">fkjava</span></span><br><span class="line">  <span class="attr">addr:</span></span><br><span class="line">    <span class="attr">detail:</span> <span class="string">广州市</span></span><br><span class="line">    <span class="attr">postcode:</span> <span class="number">510000</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FkConfig</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> YamlPropertiesFactoryBean <span class="title">crazyitProps</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> fact = <span class="keyword">new</span> YamlPropertiesFactoryBean();</span><br><span class="line">		<span class="comment">// 加载指定的自定义配置文件</span></span><br><span class="line">		fact.setResources(<span class="keyword">new</span> ClassPathResource(<span class="string">&quot;fk/crazy.yml&quot;</span>));</span><br><span class="line">		<span class="keyword">return</span> fact;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.name&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String userName;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.addr.detail&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String userDetail;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.addr.postcode&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String userPostcode;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 传统的依赖注入，将容器中crazyitProps Bean注入该field,即为上面程序的方法名作为属性值</span></span><br><span class="line">	<span class="meta">@Resource(name = &quot;crazyitProps&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> Properties crazyitProps;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="meta">@GetMapping(&quot;/hello&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">hello</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Map.of(<span class="string">&quot;userName&quot;</span>, userName, <span class="string">&quot;userDetail&quot;</span>,</span><br><span class="line">				userDetail, <span class="string">&quot;userPostcode&quot;</span>, userPostcode, <span class="string">&quot;props&quot;</span>, crazyitProps);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>PropertiesPropertySourceLoader | YamlPropertySourceLoader：将属性文件或YAML文件加载成<strong>PropertySource</strong>。通常用于在配置环境后处理器中使用，接下来可将PropertySource添加到配置环境中。</p>
-</li>
-</ul>
-<blockquote>
-<p>@PropertySource注解和@TestPropertySource注解只能读取属性文件（propertie文件），告诉Spring Boot要去加载哪些额外的属性文件。</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义配置环境后处理器</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FkEnvPostProcessor</span> <span class="keyword">implements</span> <span class="title">EnvironmentPostProcessor</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="comment">// 使用PropertiesPropertySourceLoader | YamlPropertySourceLoader来加载自定义的配置文件</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> YamlPropertySourceLoader loader = <span class="keyword">new</span> YamlPropertySourceLoader();</span><br><span class="line"></span><br><span class="line">	<span class="meta">@SneakyThrows</span></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postProcessEnvironment</span><span class="params">(ConfigurableEnvironment environment, SpringApplication application)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="comment">// 使用YamlPropertySourceLoader来加载自定义的配置文件</span></span><br><span class="line">		PropertySource source = loader.load(<span class="string">&quot;custom&quot;</span>, <span class="keyword">new</span> ClassPathResource(<span class="string">&quot;fk/fk.yml&quot;</span>)).get(<span class="number">0</span>);</span><br><span class="line">		System.out.println(source.getProperty(<span class="string">&quot;user.name&quot;</span>));</span><br><span class="line">		System.out.println(source.getProperty(<span class="string">&quot;user.addr.detail&quot;</span>));</span><br><span class="line">		System.out.println(source.getProperty(<span class="string">&quot;user.addr.postcode&quot;</span>));</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 将自定义的配置文件中的信息添加到配置环境中</span></span><br><span class="line">		environment.getPropertySources().addLast(source);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">org.springframework.boot.env.EnvironmentPostProcessor</span>=<span class="string"></span></span><br><span class="line">                                       <span class="attr">org.crazyit.postprocessor.FkEnvPostProcessor</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="改变配置文件的位置"><a href="#改变配置文件的位置" class="headerlink" title="改变配置文件的位置"></a>改变配置文件的位置</h4><p>在默认情况下，Spring Boot会自动按如下顺序加载默认的配置又件，后加载的属性文件会覆盖先加载的属性文件，因此可认为后加载的属性文件具有更高的优先级。</p>
-<ul>
-<li><p><strong>类加载路径（resources目录）</strong>application.properties|yml  （相当于JAR包内）—-optional: classpath:/</p>
-</li>
-<li><p><strong>类加载路径下的/config包</strong>(resources/config)。 （相当于JAR包内）——–optional: classpath:/config/</p>
-<blockquote>
-<p>【备注】：上面类加载路径及载路径下config子目录，当应用被打包后，它们就被打包到了JAR包中。</p>
-</blockquote>
-</li>
-<li><p><strong>当前路径</strong>（相当于JAR包外）—–optional: file:./</p>
-<p>c:\abc\xyz&gt; java -jar test.jar（Spring Boot应用）——执行该java命令所在的目录（c:\abc\xyz）下的application.properties|yml</p>
-</li>
-<li><p><strong>当前路径下的/config子目录</strong>（相当于JAR包外）——-optional: file:./config/</p>
-</li>
-<li><p><strong>当前路径下的/config子目录的任意直接子目录</strong>，也就是/config/abc/、/config/xyz/等，不能是/config/abc/def/。（相当于JAR包外），实际上就是optional:file:./config/*/ </p>
-</li>
-</ul>
-<blockquote>
-<p>【说明】3个要点：</p>
-<ol>
-<li>运行Spring Boot应用的当前目录下的配置文件会覆盖JAR包中原有的配置文件——方便部署人员去添加自己的配置文件来覆盖Spring Boot应用中原有的配置。</li>
-<li>无论是类加载路径中（JAR包），还是当前目录下（JAR包外），config子目录下配置文件总会被自动加载，而且优先级更高。</li>
-<li>当前目录下，config的直接子目录下（config/abc、config/xyz）的配置文件的优先级是最高的。</li>
-</ol>
-</blockquote>
-<p>如果想改变这种默认行为，Spring Boot可通过如下系统属性（或环境变量，或命令行参数)来改变配置文件的位置</p>
-<ul>
-<li><p><strong>spring.config.name：改变配置文件的文件名，默认是 application</strong>。如果用OS环境变量来设置，则该属性对应于SPRING_CONFIG_NAME环境变量名， 它的默认值决定了Spring Boot要加载的配置文件的默认的文件名。</p>
-</li>
-<li><p><strong>spring.config.location：改变配置文件的加载路径</strong>。如果用OS 环境变量来设置，则该属性对应于SPRING_CONFIG_LOCATION 环境变量名。其默认值是5个路径：</p>
-<ul>
-<li>optional: classpath:/</li>
-<li>optional: classpath:/config/</li>
-<li>optional: file:./</li>
-<li>optional: file:./config/</li>
-<li>optional: file:./config/*/ </li>
-</ul>
-<blockquote>
-<p>【说明】</p>
-<ol>
-<li>使用通配符有如下限制：<ul>
-<li><strong>通配符只能在外部路径中使用</strong>，例如file:前缀就表示使用文件系统的当前路径；classpath:前缀的路径不能使用通配符。</li>
-<li><strong>每个加载路径只能在最后面使用一个通配符</strong>，不能写成file:./* /* /。</li>
-</ul>
-</li>
-<li><strong>optional:前缀用于告诉Spring Boot不要检查该路径下是否存在配置文件，如果该路径下存在配置文件就加载，否则就忽略该路径</strong>。如果不添加optional:前缀，那么 Spring Boot 会强制检查该路径下是否存在配置文件，若该路径下不存在任何配置文件，Spring Boot将会抛出ConfigDataLocationNotFoundException异常。</li>
-</ol>
-</blockquote>
-</li>
-<li><p><strong>spring.confg.additional-location：添加配置文件的加载路径，不会覆盖原有的配置文件的加载路径</strong>。(增加而非替换)</p>
-</li>
-</ul>
-<blockquote>
-<p>【注意】<strong>不要尝试使用Spring Boot配置属性来设置</strong>spring.config.name、spring.config.location、spring.config.additional-location属性，因为这几个属性的加载时机非常早，所以只能通过系统环境变量、系统属性或命令行参数来设置。</p>
-</blockquote>
-<h4 id="导入额外的配置文件"><a href="#导入额外的配置文件" class="headerlink" title="导入额外的配置文件"></a>导入额外的配置文件</h4><p>在Spring容器刷新之后，Spring Boot还可使用如下方式导入额外的配置文件：</p>
-<ul>
-<li><p>使用@PropertySource注解导入额外的属性文件。</p>
-<blockquote>
-<p>【注意】@PropertySource注解去加载属性文件时，<strong>默认所使用的字符集是操作系统相关的</strong>。如果你保存属性文件使用了<strong>UTF-8字符集，使用该注解时也需要通过encoding属性来指定对应的字符集</strong>。</p>
-</blockquote>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">crazy.yml文件内容：</span></span><br><span class="line"></span><br><span class="line"><span class="attr">crazyit:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">孙悟空</span></span><br><span class="line">  <span class="attr">addrs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">花果山</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">西天取经路</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">fk.properties内容：</span></span><br><span class="line"></span><br><span class="line"><span class="meta">user.name</span>=<span class="string">fkjava</span></span><br><span class="line"><span class="meta">user.addr.detail</span>=<span class="string">广州市</span></span><br><span class="line"><span class="meta">user.addr.postcode</span>=<span class="string">510000</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> org.crazyit;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.SpringApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.PropertySource;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="comment">// 指定加载自定义的fk/fk.properties配置文件</span></span><br><span class="line"><span class="meta">@PropertySource(value = &quot;classpath:/fk/fk.properties&quot;, encoding = &quot;utf-8&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		SpringApplication.run(App.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.name&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String userName;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.addr.detail&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String userDetail;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;user.addr.postcode&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String userPostcode;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;crazyit.name&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String crazyitName;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;crazyit.addrs[0]&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String crazyitAdds1;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;crazyit.addrs[1]&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String crazyitAdds2;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@GetMapping(&quot;/hello&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">hello</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Map.of(<span class="string">&quot;userName&quot;</span>, userName, <span class="string">&quot;userDetail&quot;</span>,</span><br><span class="line">				userDetail, <span class="string">&quot;userPostcode&quot;</span>, userPostcode, <span class="string">&quot;crazyitName&quot;</span>,</span><br><span class="line">				crazyitName, <span class="string">&quot;crazyitAdds1&quot;</span>, crazyitAdds1,</span><br><span class="line">				<span class="string">&quot;crazyitAdds2&quot;</span>, crazyitAdds2);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>使用spring.config.import属性导入额外的配置文件(包括属性文件和YAML 文件)。</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">application.yml内容：</span></span><br><span class="line"></span><br><span class="line"><span class="attr">fkjava:</span></span><br><span class="line">  <span class="attr">server:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">&quot;疯狂科技服务器&quot;</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">9000</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">config:</span></span><br><span class="line">    <span class="comment"># 指定导入类加载路径下fk/fk.yml文件</span></span><br><span class="line">    <span class="attr">import:</span> <span class="string">optional:classpath:/fk/fk.yml</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="使用占位符引用其他配置属性"><a href="#使用占位符引用其他配置属性" class="headerlink" title="使用占位符引用其他配置属性"></a>使用占位符引用其他配置属性</h4><p>在配置文件中<strong>可通过占位符（${}）的方式来引用已定义的属性，或者引用其他配置源</strong>（如系统属性、环境变量、命令参数等)配置的属性。</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="string">$&#123;port&#125;</span></span><br><span class="line"><span class="attr">app:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">疯狂Spring</span> <span class="string">Boot终极讲义</span></span><br><span class="line">  <span class="attr">description:</span> <span class="string">$&#123;app.name&#125;是一本很优秀的图书</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h4 id="引用构建文件中的属性"><a href="#引用构建文件中的属性" class="headerlink" title="引用构建文件中的属性"></a>引用构建文件中的属性</h4><p>SpringBoot还允许配置文件读取构建文件（pom.xml或者build.gradle）中的属性。</p>
-<ul>
-<li><p>对于pom文件： 使用@属性名@引用pom.xml文件中配置属性</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8181</span></span><br><span class="line"><span class="comment"># 应用pom.xml文件中的配置属性</span></span><br><span class="line"><span class="attr">app:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">@name@</span></span><br><span class="line">  <span class="attr">version:</span> <span class="string">项目版本：@version@</span></span><br><span class="line"><span class="attr">java:</span></span><br><span class="line">  <span class="attr">version:</span> <span class="string">@java.version@</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;app.name&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String appName;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;app.version&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String appVersion;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;java.version&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String javaVersion;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@GetMapping(&quot;/hello&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">hello</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Map.of(<span class="string">&quot;appName&quot;</span>, appName, <span class="string">&quot;appVersion&quot;</span>,</span><br><span class="line">				appVersion, <span class="string">&quot;javaVersion&quot;</span>, javaVersion);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
-<li><p>对于build文件： 首先需要在build.gradle文件中对Java插件的processResources进行配置：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 配置Java插件的processResources Task</span><br><span class="line">   processResources &#123;</span><br><span class="line">expand(project.properties)</span><br><span class="line">   &#125;</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
-
-<p>然后将这段配置添加到原有的 build.gradle文件的最后，接下来即可在配置文件中通过“${属性名}”的形式引用build.gradle文件中的属性，  此时，原有的占位符格式需要进行转义：\${..}。</p>
-</li>
-</ul>
-<h4 id="配置随机值"><a href="#配置随机值" class="headerlink" title="配置随机值"></a>配置随机值</h4><p>有些时候（比如出于测试的需要)，需要为应用配置各种随机值，包括随机整数、UUID等，它们都可通过Spring Boot的 <strong>RandomValuePropertySource</strong>来配置。实际上，在配置文件中配置随机值甚至无须知晓RandomValuePropertySource的存在，只要在配置文件中<strong>使用${random.xxx}的形式即可生成各种随机值</strong>，不过这个random就是RandomValuePropertySource，因此random能使用哪些属性完全取决于RandomValuePropertySource 的API。</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="string">$&#123;random.int(5000,9000)&#125;</span></span><br><span class="line"><span class="comment"># 应用pom.xml文件中的配置属性</span></span><br><span class="line"><span class="attr">app:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">$&#123;random.uuid&#125;</span></span><br><span class="line">  <span class="attr">desc:</span> <span class="string">$&#123;app.name&#125;是一个很酷的应用</span></span><br><span class="line"><span class="attr">java:</span></span><br><span class="line">  <span class="attr">version:</span> <span class="string">@java.version@</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>【注意】当你用int()或者long()来生成带范围的随机值时(比如第一个)，用于分割范围的逗号的前后都不能有空格。</p>
-</blockquote>
-<p>【总结】配置文件中引用其他属性</p>
-<ol>
-<li><p>用占位符引用已有的配置属性。  ${}</p>
-</li>
-<li><p>引用生成文件中的配置属性。</p>
-<p>​    Maven： @属性@<br>​    Gradle：  ${}, 此时对占位符引用要进行转义。</p>
-</li>
-<li><p>引用随机值。 ${random.int|long|uuid}</p>
-</li>
-</ol>
 ]]></content>
       <categories>
         <category>SpringBoot</category>
