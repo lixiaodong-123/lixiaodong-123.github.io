@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"qiuzhiblog.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="所谓Profile，就是一组配置环境、各种程序组件的合集。当经常需要在不同的环境间切换，配置文件常常就需要随之修改。每个 Profile都包括一组配置文件和程序组件等，对应于一个部署环境。只要为每个部署环境都提供了对应的Profile，接下来当应用被部署到不同的环境中时，只要切换到相应的 Profile即可。 配置和切换Profile 声明Profile：Profile可包括程序组件和配置文件，声">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot的Profile">
+<meta property="og:url" content="https://qiuzhiblog.cn/2022/02/21/SpringBoot%E7%9A%84Profile/index.html">
+<meta property="og:site_name" content="瑾瑜博客">
+<meta property="og:description" content="所谓Profile，就是一组配置环境、各种程序组件的合集。当经常需要在不同的环境间切换，配置文件常常就需要随之修改。每个 Profile都包括一组配置文件和程序组件等，对应于一个部署环境。只要为每个部署环境都提供了对应的Profile，接下来当应用被部署到不同的环境中时，只要切换到相应的 Profile即可。 配置和切换Profile 声明Profile：Profile可包括程序组件和配置文件，声">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-21T14:55:38.000Z">
+<meta property="article:modified_time" content="2022-02-21T14:57:17.528Z">
+<meta property="article:author" content="李晓东">
+<meta property="article:tag" content="SpringBoot">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://qiuzhiblog.cn/2022/02/21/SpringBoot%E7%9A%84Profile/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://qiuzhiblog.cn/2022/02/21/SpringBoot%E7%9A%84Profile/","path":"2022/02/21/SpringBoot的Profile/","title":"SpringBoot的Profile"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>SpringBoot的Profile | 瑾瑜博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="瑾瑜博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">瑾瑜博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+    <!-- require MetingJS-->
+    <script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script>
+    <meting-js
+    auto="https://y.qq.com/n/ryqq/playlist/8117002682.html">
+    </meting-js> 
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%92%8C%E5%88%87%E6%8D%A2Profile"><span class="nav-number">1.</span> <span class="nav-text">配置和切换Profile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%B4%BB%E5%8A%A8Profile"><span class="nav-number">2.</span> <span class="nav-text">添加活动Profile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Profile%E7%BB%84"><span class="nav-number">3.</span> <span class="nav-text">Profile组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">混合复合类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E7%8E%AF%E5%A2%83%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0Profile%EF%BC%88%E5%A4%9AProfile%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">根据环境自动更新Profile（多Profile的配置文件）</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="李晓东"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">李晓东</p>
+  <div class="site-description" itemprop="description">我们终此一生，就是要摆脱他人的期待，找到真正的自己。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://lixiaodong-123.github.io/" title="GitHub → https:&#x2F;&#x2F;lixiaodong-123.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://email.163.com/" title="E-Mail → https:&#x2F;&#x2F;email.163.com&#x2F;" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/1689140784" title="QQ → 1689140784"><i class="fa fa-qq fa-fw"></i>QQ</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/19831779994" title="wechat → 19831779994"><i class="fa fa-weixin fa-fw"></i>wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/yourname" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.zhihu.com/people/shen-chi-qi-de-chu-er-de-huan-ying" title="https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;shen-chi-qi-de-chu-er-de-huan-ying" rel="noopener" target="_blank">知乎</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qiuzhiblog.cn/2022/02/21/SpringBoot%E7%9A%84Profile/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="李晓东">
+      <meta itemprop="description" content="我们终此一生，就是要摆脱他人的期待，找到真正的自己。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瑾瑜博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SpringBoot的Profile
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-02-21 22:55:38 / 修改时间：22:57:17" itemprop="dateCreated datePublished" datetime="2022-02-21T22:55:38+08:00">2022-02-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SpringBoot/" itemprop="url" rel="index"><span itemprop="name">SpringBoot</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>所谓<strong>Profile，就是一组配置环境、各种程序组件的合集</strong>。当经常需要在不同的环境间切换，配置文件常常就需要随之修改。<strong>每个 Profile都包括一组配置文件和程序组件等，对应于一个部署环境。只要为每个部署环境都提供了对应的Profile，接下来当应用被部署到不同的环境中时，只要切换到相应的 Profile即可</strong>。</p>
+<h4 id="配置和切换Profile"><a href="#配置和切换Profile" class="headerlink" title="配置和切换Profile"></a>配置和切换Profile</h4><ol>
+<li><p>声明Profile：Profile可包括程序组件和配置文件，声明程序组件和配置文件的Profile很简单：</p>
+<ul>
+<li><strong>使用@Profile注解修饰</strong>@Component、@Configuration、@ConfigurationProperties等注解修饰的类，这限制了这些类仅对特定的Profile有效。</li>
+<li>通过<strong>配置文件的文件名限制Profile</strong>。比如 application-dev.properties(或application-dev.yml)文件限制了仅对 dev Profile有效；application-test.properties(或 application-test.yml）文件限制了仅对test Profile有效。</li>
+<li>在<strong>配置文件中使用特定语法限制某些属性仅对特定的Profile有效</strong>。这种特殊的配置文件被称为“<strong>多 Profile配置文件</strong>”。</li>
+</ul>
+<p>对于@ConfigurationProperties类有一点需要说明：如果@ConfigurationProperties类是通过**@EnableConfigurationProperties注解来启用的<strong>，而不是通过扫描方式(用@ConfigurationPropertiesScan注解）来启用的，则</strong>需要在@EnableConfigurationProperties注解所在的@Configuration类上使用@Profile注解<strong>。对于以</strong>扫描方式**启用的@ConfigurationProperties注解，则可在@ConfigurationProperties类本身上指定@Profile注解。</p>
+</li>
+</ol>
+<p>Spring Boot应用中使用Profile其实很简单：配置文件通过文件名限制它所属的Profile；程序组件通过@Profile注解来限制它所属的Profile。</p>
+<ol start="2">
+<li>设置活动Profile：在运行应用时，可通过spring.profiles.active属性指定激活哪个 Profile。属性主要还是使用如下方式来指定：<ul>
+<li>通过application.properties（或application.yml）文件指定。</li>
+<li>使用操作系统的SPRING_PROFILES_ACTIVE 环境变量指定。</li>
+<li>使用系统属性指定。</li>
+<li>使用命令行参数指定。</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>【说明】通用配置文件和Profile特定的配置文件</p>
+<p>通用配置文件：  application.properties或者application.yml</p>
+<p>profile相关：   application-{profile名}.properties或者application-{profile名}.yml</p>
+<p>如果项目中还定义了通用的配置文件：application.properties(或 application.yml)文件，则 SprngBoot也会加载它，但<strong>对特定的Profile才有效的配置文件，其优先级更高，它总会覆盖通用的配置文件中的同名属性</strong>。</p>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">pom文件添加两个依赖：</span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">application-test.yml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">fkjava:</span></span><br><span class="line">  <span class="attr">app:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">测试环境</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/mytest?serverTimezone=UTC</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">32147</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">application-dev.yml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">fkjava:</span></span><br><span class="line">  <span class="attr">app:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">开发环境</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/dev?serverTimezone=UTC</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">32147</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">application.yml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span></span><br><span class="line">    <span class="attr">active:</span> <span class="string">dev</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@Profile(&quot;dev&quot;)</span> <span class="comment">// 该控制器仅对dev作为活动profile时才有效</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DevController</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;fkjava.app.name&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	<span class="keyword">private</span> DataSource dataSource;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@SneakyThrows</span></span><br><span class="line">	<span class="meta">@GetMapping(&quot;/hello&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Map <span class="title">test</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Map.of(<span class="string">&quot;name&quot;</span>, name, <span class="string">&quot;database&quot;</span>, dataSource.getConnection().getCatalog());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@Profile(&quot;test&quot;)</span> <span class="comment">// 该控制器仅对test作为活动profile时才有效</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestController</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;fkjava.app.name&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	<span class="keyword">private</span> DataSource dataSource;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@SneakyThrows</span></span><br><span class="line">	<span class="meta">@GetMapping(&quot;/test&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Map <span class="title">test</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Map.of(<span class="string">&quot;name&quot;</span>, name, <span class="string">&quot;database&quot;</span>, dataSource.getConnection().getCatalog());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="添加活动Profile"><a href="#添加活动Profile" class="headerlink" title="添加活动Profile"></a>添加活动Profile</h4><p>Spring Boot还允许添加额外的活动Profile，新增的活动 Profile不会彻底替换原有的Profile，而是对原有的 Profile进行追加：当追加的 Profile 中的程序组件、配置属性与原有的Profile冲突时，追加的 Profile中的程序组件、配置属性会覆盖原有的 Profile的定；否则依然使用原有的Profile的设定。添加新Profile可通过如下方式进行：</p>
+<ul>
+<li>使用<strong>spring.profiles.include属性</strong>，与spring.profiles.active不同，<strong>include是添加Profile，active是指定激活新的活动Profile</strong>。</li>
+<li>调用SpringApplication 的 <strong>setAdditionalProfiles()方法</strong>来添加新的活动 Profile。</li>
+</ul>
+<blockquote>
+<p>【备注】spring.profiles.active属性用于切换活动profile，意味着最终最多能有一个活动profile，spring.profiles.include属性用于添加活动profile，意味着最终可能有多个活动profile</p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">添加新的配置文件application-xdd.yml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">fkjava:</span></span><br><span class="line">  <span class="attr">app:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">新增的环境</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">include属性添加新的配置文件</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span></span><br><span class="line">    <span class="attr">active:</span> <span class="string">dev</span></span><br><span class="line">    <span class="attr">include:</span> <span class="string">xdd</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@Profile(&quot;xdd&quot;)</span> <span class="comment">// 该控制器仅对xdd作为活动profile时才有效</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AddController</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;fkjava.app.name&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	<span class="keyword">private</span> DataSource dataSource;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@SneakyThrows</span></span><br><span class="line">	<span class="meta">@GetMapping(&quot;/add&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Map <span class="title">test</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Map.of(<span class="string">&quot;name&quot;</span>, name, <span class="string">&quot;database&quot;</span>, dataSource.getConnection().getCatalog());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">通过方法设置：主配置方法中添加</span><br><span class="line">		<span class="keyword">var</span> app = <span class="keyword">new</span> SpringApplication(App.class);</span><br><span class="line">		<span class="comment">// 添加新的活动Profile</span></span><br><span class="line">		app.setAdditionalProfiles(<span class="string">&quot;xdd&quot;</span>);</span><br><span class="line">		app.run(args);</span><br></pre></td></tr></table></figure>
+
+<h4 id="Profile组"><a href="#Profile组" class="headerlink" title="Profile组"></a>Profile组</h4><p>有时可能按不同的功能组定义了相应的配置文件，其实这组配置文件依然应该属于一个特定的Profile，在这种需求下，则可以考虑将它们定义成Profile组。<strong>Profile组也是一个Profile，但该Profile可包含另外几个Profile</strong>。例如：</p>
+<ul>
+<li>spring.profiles.group.prod[0]=banner</li>
+<li>spring.profiles.group.prod[1]=server</li>
+</ul>
+<p>上面定义了一个Profile组：prod，该组包含banner和server两个Profile，因此如果将上面prod设为活动Profile，那就意味着项目中有3个活动profile，依次是prod、banner、server——通过使用这种方式，可以让项目设置多个活动Profile。</p>
+<p>Profile组及其成员的加载顺序：</p>
+<ul>
+<li><p>先加载Profile组对应的资源（比如先加载prod）</p>
+</li>
+<li><p>然后按顺序加载各组成员Profile对应的资源（比如再加载banner、server）。后加载的能覆盖先加载的。</p>
+<p>——Profile组对应的资源，总会被组成员对应的资源所覆盖。</p>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">application-gp.yml文件：</span></span><br><span class="line"></span><br><span class="line"><span class="attr">fkjava:</span></span><br><span class="line">  <span class="attr">app:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">新增的环境</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">application.yml文件：</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span></span><br><span class="line">    <span class="attr">group:</span></span><br><span class="line">      <span class="comment"># 设置了一个Profile组，组名为gp,它包含两个Profile：dev, test</span></span><br><span class="line">      <span class="attr">gp:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">test</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">dev</span></span><br><span class="line">    <span class="comment"># 设置活动Profile是gp，由于gp是一个Profile组，因此它会加载gp及gp所包含的所有Profile组成员</span></span><br><span class="line">    <span class="attr">active:</span> <span class="string">gp</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="混合复合类型"><a href="#混合复合类型" class="headerlink" title="混合复合类型"></a>混合复合类型</h4><ol>
+<li><p>若可从多个配置文件中加载<strong>List类型</strong>的属性时，<strong>后加载的List集合总是完全替换之前加载List集合</strong>。比如从第一个配置文件中加载的List集合包含2个元素，接着从第二个配置文件中加载的List集合包含1个元素，那么这个List集合属性最终就只有一个元素。</p>
+</li>
+<li><p>若可从多个配置文件中加载<strong>Map类型</strong>的属性时，后加载的Map的<strong>key-value对将会添加到之前加载Map中</strong>。比如先从第一个配置文件中加载的Map包含2个key-value对，接着从第二个配置文件中加载的Map集合包含1个key-value对、且该key-value与之前的两个key-value对不冲突，那么这个Map属性最终会包含3个key-value对。</p>
+</li>
+</ol>
+<blockquote>
+<p>【归纳】： List集合是完全覆盖，Map集合则是元素添加。</p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">application-dev.xml文件</span></span><br><span class="line"></span><br><span class="line"><span class="attr">fkjava:</span></span><br><span class="line">  <span class="attr">app:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">开发环境</span></span><br><span class="line">    <span class="attr">items:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">疯狂Python讲义</span></span><br><span class="line">    <span class="attr">scores:</span></span><br><span class="line">      <span class="attr">english:</span> <span class="number">92</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/dev?serverTimezone=UTC</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">32147</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">application-test.yml文件</span></span><br><span class="line"></span><br><span class="line"><span class="attr">fkjava:</span></span><br><span class="line">  <span class="attr">app:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">测试环境</span></span><br><span class="line">    <span class="attr">items:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">疯狂java讲义</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">疯狂Spring</span> <span class="string">boot讲义</span></span><br><span class="line">    <span class="attr">scores:</span></span><br><span class="line">      <span class="attr">yuwen:</span> <span class="number">89</span></span><br><span class="line">      <span class="attr">math:</span> <span class="number">95</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/mytest?serverTimezone=UTC</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">32147</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConfigurationProperties(&quot;fkjava.app&quot;)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestConfig</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> List&lt;String&gt; items;</span><br><span class="line">	<span class="keyword">private</span> Map&lt;String, Integer&gt; scores;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@Profile(&quot;test&quot;)</span> <span class="comment">// 该控制器仅对test作为活动profile时才有效</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestController</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;fkjava.app.name&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	<span class="keyword">private</span> DataSource dataSource;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	<span class="keyword">private</span> TestConfig testConfig;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@SneakyThrows</span></span><br><span class="line">	<span class="meta">@GetMapping(&quot;/test&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Map <span class="title">test</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Map.of(<span class="string">&quot;name&quot;</span>, name, <span class="string">&quot;database&quot;</span>,</span><br><span class="line">				dataSource.getConnection().getCatalog(),<span class="string">&quot;config&quot;</span>, testConfig);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="根据环境自动更新Profile（多Profile的配置文件）"><a href="#根据环境自动更新Profile（多Profile的配置文件）" class="headerlink" title="根据环境自动更新Profile（多Profile的配置文件）"></a>根据环境自动更新Profile（多Profile的配置文件）</h4><p>Spring Boot允许<strong>使用三个减号(—）将一份*.yml 配置文件分割成逻辑上的多个片段（ *.properties文件使用#—进行分割），每个片段都会被加载成单独的配置</strong>。当配置文件被分割成多个配置之后，接下来可通过如下属性指定“条件性”生效：</p>
+<ul>
+<li>spring.config.activate.<strong>on-profile</strong>：指定此行配置以下的配置<strong>仅当指定的Profile激活时才有效</strong>。该属性也支持使用**取反运算符(!)**，比如“!dev”表示非dev Profile时有效。</li>
+<li>spring.config.activate.<strong>on-cloud-platform</strong>：指定此行配置以下的配置<strong>仅当处于指定的云平台上时才有效</strong>。</li>
+</ul>
+<blockquote>
+<p>【本质】：就是将多个针对特定Profile的配置文件合并到一起。</p>
+<p>【说明】两个属性值：</p>
+<ol>
+<li>always-set表示这个属性总是有效的。</li>
+<li>sometimes-set表示只有当prod Profile处于活动状态时，该属性才有效。</li>
+</ol>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  profiles:</span><br><span class="line">    active: dev</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"># 下面是一个独立的片段</span><br><span class="line">fkjava:</span><br><span class="line">  app:</span><br><span class="line">    name: 开发环境</span><br><span class="line">spring:</span><br><span class="line">  datasource:</span><br><span class="line">    url: jdbc:mysql://localhost:3306/dev?serverTimezone=UTC</span><br><span class="line">    username: root</span><br><span class="line">    password: 32147</span><br><span class="line">    # 指定仅当活动Profile为dev时，该片段生效</span><br><span class="line">  config:</span><br><span class="line">    activate:</span><br><span class="line">      on-profile: dev</span><br><span class="line">---</span><br><span class="line"># 下面是一个独立的片段</span><br><span class="line">fkjava:</span><br><span class="line">  app:</span><br><span class="line">    name: 测试环境</span><br><span class="line">spring:</span><br><span class="line">  datasource:</span><br><span class="line">    url: jdbc:mysql://localhost:3306/mytest?serverTimezone=UTC</span><br><span class="line">    username: root</span><br><span class="line">    password: 32147</span><br><span class="line">   # 指定仅当活动Profile为test时，该片段生效</span><br><span class="line">  config:</span><br><span class="line">    activate:</span><br><span class="line">      on-profile: test</span><br><span class="line">      on-cloud-platform: kubernetes</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>Buy me a coffee</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="李晓东 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="李晓东 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>李晓东
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://qiuzhiblog.cn/2022/02/21/SpringBoot%E7%9A%84Profile/" title="SpringBoot的Profile">https://qiuzhiblog.cn/2022/02/21/SpringBoot的Profile/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="https://twitter.com/username">
+          <span class="icon">
+            <i class="fab fa-twitter"></i>
+          </span>
+
+          <span class="label">Twitter</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="https://t.me/channel_name">
+          <span class="icon">
+            <i class="fab fa-telegram"></i>
+          </span>
+
+          <span class="label">Telegram</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/atom.xml">
+          <span class="icon">
+            <i class="fa fa-rss"></i>
+          </span>
+
+          <span class="label">RSS</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SpringBoot/" rel="tag"># SpringBoot</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/20/SpringBoot%E7%B1%BB%E5%9E%8B%E5%AE%89%E5%85%A8%E7%9A%84%E7%BB%91%E5%AE%9A/" rel="prev" title="SpringBoot类型安全的绑定">
+                  <i class="fa fa-chevron-left"></i> SpringBoot类型安全的绑定
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">李晓东</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+
+
+
+
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
