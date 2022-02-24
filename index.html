@@ -173,7 +173,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -248,6 +248,379 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://qiuzhiblog.cn/2022/02/23/SpringBoot%E6%97%A5%E5%BF%97%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="李晓东">
+      <meta itemprop="description" content="我们终此一生，就是要摆脱他人的期待，找到真正的自己。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瑾瑜博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/02/23/SpringBoot%E6%97%A5%E5%BF%97%E9%85%8D%E7%BD%AE/" class="post-title-link" itemprop="url">SpringBoot日志配置</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-02-23 20:59:29 / 修改时间：21:02:04" itemprop="dateCreated datePublished" datetime="2022-02-23T20:59:29+08:00">2022-02-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SpringBoot/" itemprop="url" rel="index"><span itemprop="name">SpringBoot</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h4 id="SpringBoot的日志设计"><a href="#SpringBoot的日志设计" class="headerlink" title="SpringBoot的日志设计"></a>SpringBoot的日志设计</h4><p>只要在项目中导入spring-boot-starter.jar依赖，它就会传递导入spring-boot-starter-logging.jar，spring-boot-starter-logging.jar依赖如下三个JAR包：</p>
+<ul>
+<li>logback-classic.jar：它传递依赖于logback-core.jar和 slf4j-api.jar。</li>
+<li>log4j-to-slf4j.jar：它传递依赖于log4j-api.jar和 s1f4j-api.jar。</li>
+<li>jul-to-slf4j.jar：它传递依赖于slf4j-api.jar。</li>
+</ul>
+<p>日志框架又可分为：</p>
+<ul>
+<li>门面类(抽象层)：SLF4J、JCL、JBoss Logging。</li>
+<li>日志实现：Log4j、Log4j2、Logback、JUL。<br>Spring Boot<strong>默认使用SLF4J+Logback的日志组合</strong>，默认添加二者的依赖，其中SLF4J作为日志门面（应用程序输出日志时也应该面向该API)，Logback作为日志实现，开发者通常不需要直接操作日志实现的API；<strong>当然也通过配置完全可以将底层日志实现改为使用其他框架</strong>。Spring Boot<strong>允许将Logback 依赖排除出去</strong>，<strong>添加其他日志实现的依赖</strong>，这样即可将底层日志实现改为使用其他框架。</li>
+</ul>
+<p>Spring Boot框架还<strong>需要将其他第三方日志框架所生成的日志信息统一路由给SLF4J来处理</strong>，故还有如下依赖：</p>
+<ul>
+<li><strong>log4j-to-slf4j.jar</strong>：负责将Log4j日志路由到SLF4J。</li>
+<li><strong>jul-to-slf4j.jar</strong>：负责将JUL日志路由到SLF4J。</li>
+</ul>
+<p><img src="/2022/02/23/SpringBoot%E6%97%A5%E5%BF%97%E9%85%8D%E7%BD%AE/%E6%97%A5%E5%BF%97%E6%8A%BD%E8%B1%A1%E5%B1%82.jpg"></p>
+<blockquote>
+<p>【说明】当把 Spring Boot 应用<strong>部署到Web服务器或应用服务器上时，JUL生成的日志将不会被路由到Spring Boot应用的日志中</strong>，这是为了避免将服务器或部署在服务器上的其他应用程序的日志也路由到Spring Boot应用的日志中，<strong>否则会造成日志的混乱</strong>。</p>
+<p>【总结】 Spring Boot<strong>统一了Java领域的所有框架所可能用到的日志实现</strong>，并将这些日志全部“路由”给SLF4J来管理，因此开发者只要管理SLF4J日志，即可对项目中所有日志框架进行管理。</p>
+</blockquote>
+<h4 id="使用日志"><a href="#使用日志" class="headerlink" title="使用日志"></a>使用日志</h4><ol>
+<li><p>在程序中获取Logger对象（org.slf4j包下的），<strong>通过LoggerFactory，也可用Lombok的@Slf4j注解来获取</strong>。</p>
+<blockquote>
+<p>Lombok这个小工具专门通过各种注解来生成常用的代码，比如下常用注解：</p>
+<ul>
+<li>@Getter：为所有实例变量生成getter方法。</li>
+<li>@Setter：为所有非final 实例变量生成setter方法。</li>
+<li>@ToString：自动生成toString()方法。</li>
+<li>@EqualsAndHashCode：自动生成 equals()和 hashCode()方法。</li>
+<li>@AlIArgsConstructor：自动生成带所有参数的构造器。</li>
+<li>@NoArgsConstructor：自动生成无参数的构造器。</li>
+<li>@Data：自动生成一个数据类，相当于@Getter、@Setter、 @ToString、@EqualsAndHashCode和@NoArgsConstructor等注解的组合。</li>
+<li>@Log、@Log4j、@Log4j2、@SIf4j、@XSIf4j、@CommonsLog、@JBossLog、@Flogger：为对应的日志实现生成一个日志对象。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>在要输出日志的地方（相当于以前Systme.out.println），Logger的trace\debug\info\warn\error来输出不同级别的日志</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="comment">// 程序要面向SLF4J API编程</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(HelloController.class);</span><br><span class="line"></span><br><span class="line">	<span class="meta">@GetMapping(&quot;/hello&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Map <span class="title">test</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		logger.trace(<span class="string">&quot;Trace级别的日志&quot;</span>);</span><br><span class="line">		logger.debug(<span class="string">&quot;DEBUG级别的日志&quot;</span>);</span><br><span class="line">		logger.info(<span class="string">&quot;INFO级别的日志&quot;</span>);</span><br><span class="line">		logger.warn(<span class="string">&quot;WARNING级别的日志&quot;</span>);</span><br><span class="line">		logger.error(<span class="string">&quot;ERROR级别的日志&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> Map.of(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;测试&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="日志级别"><a href="#日志级别" class="headerlink" title="日志级别"></a>日志级别</h4><p>SpringBoot的5种不同的日志级别:<br>                      <code>TRACE &lt;  DEBUG &lt; INFO &lt; WARN &lt; ERROR</code><br>综合各种日志框架来看，它们总共支持如下几种日志级别:<br>                       <code>ALL &lt; TRACE &lt; DEBUG &lt; INFO &lt; WARN &lt; ERROR &lt; FATAL&lt; OFF</code><br>其中，ALL代表输出所有日志，OFF 代表关闭所有日志，FATAL是Log4j增加的一种日志别，代表“致命错误”，它的级别比普通的ERROR（错误）级别更高。</p>
+<blockquote>
+<p>【说明】由于Spring Boot并不支持FATAL级别，因此FATAL级别会被自动转换为ERROR级别。</p>
+<p>当项目处于开发、测试、试运行阶段时，通常会将日志级别设得低一些，从而记录相对完整的运行过程，以便后期调试、优化应用；当项目处于实际运行阶段时，通常会将日志级别设得高一些，从而保证良好的性能。</p>
+</blockquote>
+<p>当<strong>日志输出方法的级别高于或等于应用日志的设置级别时</strong>，该日志才会实际输出，<strong>Spring Boot应用默认的日志级别是INFO，因此它默认只输出info、warn、error方法输出的日志</strong>。</p>
+<p>每条日志会输出如下信息：</p>
+<ul>
+<li>日期和时间：时间精确到毫秒。</li>
+<li>日志级别：ERROR、WARN、 INFO、DEBUG或TRACE。</li>
+<li>进程ID。</li>
+<li>三个减号（—）：分隔符。</li>
+<li>线程名：用方括号括起来的是线程名（在控制台输出时可能会被截断）。</li>
+<li>日志名：通常就是输出日志的类的完整类名。</li>
+<li>日志信息。</li>
+</ul>
+<h4 id="设置日志级别"><a href="#设置日志级别" class="headerlink" title="设置日志级别"></a>设置日志级别</h4><p>设置日志的级别，可通过以下方式：</p>
+<ol>
+<li><p>改变Spring Boot的核心日志级别</p>
+<p>通过<strong>debug=true或trace=true等属性</strong>（通过配置文件、命令行参数、系统变量、OS环境变量等方式）改变<strong>整个</strong>Spring Boot核心的日志级别。</p>
+</li>
+<li><p>改变程序组件（包括所有各种框架）的核心日志级别</p>
+<p>通过logging.level.&lt;logger-name&gt;=&lt;level&gt;属性（可通过配置文件、命令行参数、系统变量等方式）设置指定日志的日志级别，其中&lt;logger-name&gt;代表日志名，通常就是<strong>包名或全限定的类名</strong></p>
+<ul>
+<li>如果&lt;logger-name&gt;使用包名，那就意味着对该包下所有类统一设置日志级别。</li>
+<li>如果&lt;logger-name&gt;使用类名，那就意味着对该类设置日志级别。</li>
+</ul>
+<p>而level则可以是trace、debug、info、warn和error等级别。</p>
+</li>
+</ol>
+<blockquote>
+<p>【技巧】实际项目开发时，尽量避免使用System.out.println来做输出，而应该用日志来做输出。</p>
+<p>如果你在调试时用了大量的System.out.println来做输出，到了项目上线时必须要删除这些输出语法，否则会因为IO造成性能影响。</p>
+<p>但如果你用的日志(debug)来输出，项目上线时，只要将应用级别调高，这些日志输出就会被自动关闭，因此无需输出这些日志输出语句。</p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">debug:</span> <span class="literal">true</span></span><br><span class="line"><span class="comment"># 设置特定包下所有类的日志级别</span></span><br><span class="line"><span class="attr">logging:</span></span><br><span class="line">  <span class="attr">level:</span></span><br><span class="line">    <span class="attr">org:</span></span><br><span class="line">      <span class="attr">crazyit:</span></span><br><span class="line">        <span class="attr">app:</span></span><br><span class="line">          <span class="attr">controller:</span> <span class="string">debug</span></span><br></pre></td></tr></table></figure>
+
+<p>SpringBoot控制其他第三方框架的输出：</p>
+<ul>
+<li>Spring Boot让MyBatis输出它执行的SQL语句：logging.level.&lt;Mapper组件所在包&gt;=debug</li>
+<li>Spring Boot看到Redis的详细执行过程：logging.level.io.lettuce.core=debug，Spring Boot整合Redis默认使用Lettuce依赖，而io.lettuce.core就是Lettuce组件核心API所在的包。</li>
+<li>Spring Boot看到MongoDB的详细执行过程：logging.level.com.mongodb=debug，上面com.mongodb就是MongoDB核心API所在的包。</li>
+</ul>
+<p>由此可见，通过Spring Boot可以让它输出任意框架的执行过程，只需要如下设置：<strong>logging.leve.&lt;框架核心API所在的包&gt;=debug</strong></p>
+<p>只要控制台支持<strong>ANSI颜色特性</strong>，Spring Boot就会以不同颜色来区分不同级别的日志，从而增加日志的可读性。不同日志级别对应的默认颜色如下：</p>
+<ul>
+<li>FATAL：红色。</li>
+<li>ERROR：红色。</li>
+<li>WARN：黄色。 </li>
+<li>INFO：绿色。 </li>
+<li>DEBUG：绿色。 </li>
+<li>TRACE：绿色。</li>
+</ul>
+<p>Spring Boot 允许通过 <strong>spring.output.ansi.enabled属性设置是否使用不同颜色来区分不同级别的日志</strong>，该属性支持加下属性值：</p>
+<ul>
+<li>always：总是启用。</li>
+<li>detect：自动检杳。加里控制台支持ANSI颜色特性，则启用。这是默认值。</li>
+<li>never：不启用。</li>
+</ul>
+<p>控制台的日志格式由<strong>多个“%clr(输出内容){颜色值}”片段组成</strong>，每个片段都代表一个输出元素，其中{颜色值}用于指定该片段的颜色，支持如下值；如果要<strong>改变控制台的日志格式，此处的颜色值支持如下几个值。则可通过logging.pattern.console属性进行设置</strong>。</p>
+<ul>
+<li>blue：蓝色</li>
+<li>cyan：青色</li>
+<li>faint：原色</li>
+<li>green：绿色</li>
+<li>magenta：紫红色</li>
+<li>red：红色</li>
+<li>yellow：黄色</li>
+</ul>
+<p>如果<strong>不指定颜色值，直接使用“%clr(输出内容)”，则表明将该内容以当前日志级别对应的颜色输出</strong>。</p>
+<blockquote>
+<p>【说明】logging.pattern.console属性仅当使用Logback日志实现时才有效</p>
+</blockquote>
+<h4 id="输出日志到文件"><a href="#输出日志到文件" class="headerlink" title="输出日志到文件"></a>输出日志到文件</h4><p>Spring Boot默认只将日志输出到控制台，不输出到文件，如果要将日志输出到文件，可为Spring Boot设置如下两个属性的其中之一：</p>
+<ul>
+<li><strong>logging.file.name</strong>：设置日志文件的<strong>文件名</strong>。</li>
+<li><strong>logging.file.path</strong>：设置<strong>日志文件的目录</strong>。使用默认的<strong>spring.log作为文件名</strong>。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>logging.file.name</th>
+<th>logging.file.path</th>
+<th>示例</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>无</td>
+<td>无</td>
+<td></td>
+<td>只输出到控制台</td>
+</tr>
+<tr>
+<td>指定文件</td>
+<td>无</td>
+<td>my.log</td>
+<td>输出到特定文件，该文件的路径可以是绝对路径或相对路径</td>
+</tr>
+<tr>
+<td>无</td>
+<td>指定目录</td>
+<td>/f:/log</td>
+<td>写入指定路径下的 spring.log文件，该文件的路径可以是绝对路径或相对路径</td>
+</tr>
+</tbody></table>
+<p>当<strong>日志文件达到10MB时，会自动重新使用新的日志文件</strong>。若要改变这个设置，对于Logback日志实现（Spring Boot 默认采用该日志实现)，则可直接使用application.properties(或 application.yml)设置；对于其他日志实现，则需要通过对应的日志设置文件来设置。Logback日志的属性：</p>
+<table>
+<thead>
+<tr>
+<th>属性名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>logging.logback.rollingpolicy.file-name-pattern</td>
+<td>设置对日志归档的文件名模板</td>
+</tr>
+<tr>
+<td>logging.logback.rollingpolicy.clean-history-on-start</td>
+<td>设置应用启动时是否清除日志归档</td>
+</tr>
+<tr>
+<td>logging.logback.rollingpolicy.max-file-size</td>
+<td>设置日志文件归档之前的最大大小</td>
+</tr>
+<tr>
+<td>logging.logback.rollingpolicy.total-size-cap</td>
+<td>设置日志归档在被删除之前所能容纳的最大大小</td>
+</tr>
+<tr>
+<td>logging.logback.rollingpolicy.max-history</td>
+<td>设置保留多少天的日志归档(默认为7天)</td>
+</tr>
+</tbody></table>
+<p>SpringBoot用于对日志进行定制的属性：</p>
+<table>
+<thead>
+<tr>
+<th>SpringBoot属性</th>
+<th>系统属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>logging.exception-conversion-word</td>
+<td>LOG_EXCEPTION_CONVERSION_WORD</td>
+<td>用于记录异常的转换字</td>
+</tr>
+<tr>
+<td>logging.file.name</td>
+<td>LOG_FILE</td>
+<td>指定日志文档名</td>
+</tr>
+<tr>
+<td>logging.file.path</td>
+<td>LOG_PATH</td>
+<td>指定日志输出路径，使用spring.log作为文档名</td>
+</tr>
+<tr>
+<td>logging.pattern.console</td>
+<td>CONSOLE_LOG_PATTERN</td>
+<td>指定控制台日志的格式模板</td>
+</tr>
+<tr>
+<td>logging.pattern.dateformat</td>
+<td>LOG_DATAFORMAT_PATTERN</td>
+<td>指定日志中的日期格式模板</td>
+</tr>
+<tr>
+<td>logging.charset.console</td>
+<td>CONSOLE_LOG_CHARSET</td>
+<td>指定输出控制台日志时所用的字符集</td>
+</tr>
+<tr>
+<td>logging.pattern.file</td>
+<td>FILE_LOG_PATTERN</td>
+<td>指定文件日志的格式模板，仅当日志输出到文件时该属性有效</td>
+</tr>
+<tr>
+<td>logging.charset.file</td>
+<td>FILE_LOG_CHARSET</td>
+<td>指定输出文件日志时所用的字符集，仅当日志输出到文件时该属性有效</td>
+</tr>
+<tr>
+<td>logging.pattern.level</td>
+<td>LOG_LEVEL_PATTERN</td>
+<td>指定输出日志级别时使用的格式(默认为%5p)</td>
+</tr>
+<tr>
+<td>PID</td>
+<td>PID</td>
+<td>当前进程ID</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>【注意】如果打算在日志属性中使用占位符，请记住用Spring Boot语法，而不是底层日志框架的语法，尤其是使用Logback时，应该使用英文冒号(:)作为属性名和默认值的分隔符，而不是使用冒号减号(:-)。</p>
+</blockquote>
+<h4 id="日志组"><a href="#日志组" class="headerlink" title="日志组"></a>日志组</h4><p>所谓日志组，就是<strong>将多个包、类组合在一起，起一个名字，以后可直接对该组设置日志级别</strong>。对该组设置日志级别，就相当于同时为该组内的所有包及其子包、类统一设置了日志级别。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">debug:</span> <span class="literal">true</span></span><br><span class="line"><span class="comment"># 设置特定包下所有类的日志级别</span></span><br><span class="line"><span class="attr">logging:</span></span><br><span class="line">  <span class="attr">level:</span></span><br><span class="line">    <span class="comment"># 对指定日志组设置日志级别——意味着该组所对应所有包都将设为该日志级别</span></span><br><span class="line">    <span class="attr">mygp:</span> <span class="string">warn</span></span><br><span class="line">  <span class="comment"># 设置日志文件的保存目录</span></span><br><span class="line">  <span class="attr">file:</span></span><br><span class="line">    <span class="attr">path:</span> <span class="string">g:/log</span></span><br><span class="line">  <span class="attr">group:</span></span><br><span class="line">    <span class="comment"># 为多个包指定一个组名</span></span><br><span class="line">    <span class="attr">mygp:</span> <span class="string">org.crazyit.app.controller</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="关闭控制台日志"><a href="#关闭控制台日志" class="headerlink" title="关闭控制台日志"></a>关闭控制台日志</h4><p>步骤：</p>
+<ol>
+<li><p><strong>去掉Logback依赖库，添加新日志实现的依赖库</strong>。</p>
+<p>Logback日志实现的优先级最高，当该日志实现的JAR存在时，Spring Boot总会使用该JAR包作为默认的日志实现。</p>
+</li>
+<li><p><strong>在类加载路径的根路径下为新日志实现提供对应的配置文件</strong>。默认从类加载路径的根路径下加载日志配置文件，也可通过<strong>logging.config属性来设置新的加载路径</strong>。除了可根据底层依赖库自动选择日志实现外——根据JAR包来自动选择日志实现，找到哪个日志实现的JAR包，Spring Boot就是用哪个日志实现；还可通过<strong>org.springframework.boot.logging.LoggingSystem属性</strong>显式指定日志实现，该属性的值可以是<strong>LoggingSystem实现类的全限定名</strong>。</p>
+</li>
+</ol>
+<p>不同日志系统对应的配置文件：</p>
+<table>
+<thead>
+<tr>
+<th>日志系统</th>
+<th>配置文件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Logback</td>
+<td>logback-spring.xml、logback-spring.groovy、logback.xml或 logback.groovy</td>
+</tr>
+<tr>
+<td>Log4j2</td>
+<td>log4j2-spring.xml或log4j2.xml</td>
+</tr>
+<tr>
+<td>JDK（JUL）</td>
+<td>logging.properties</td>
+</tr>
+</tbody></table>
+<p> Spring Boot推荐使用<strong>带-spring后缀的配置文件作为对应日志框架的配置文件</strong>。此外，Spring Boot<strong>建议尽量避免使用JUL日志系统实现</strong>。</p>
+<p>由于 Logback是Spring Boot默认选择日志实现，因此Spring Boot 为 Logback提供了一些通用的配置文件，开发者只要导入这些配置演件即可使用文件中预定义的配置。其中常用的有如下几个：</p>
+<ul>
+<li>defaults.xml：提供了转换规则及各种通用配置。</li>
+<li>console-appender.xml：定义了一个 ConsoleAppender，用于将日志输出到轻制台。</li>
+<li>file-appender.xml：定义了一个 RollingFileAppender，用于将日志输出到文件。</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 关闭LogBack的日志在控制器的输出 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- 导入Logback通用的日志配置 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">include</span> <span class="attr">resource</span>=<span class="string">&quot;org/springframework/boot/logging/logback/defaults.xml&quot;</span> /&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- 定义日志文件 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;LOG_FILE&quot;</span></span></span><br><span class="line"><span class="tag">			  <span class="attr">value</span>=<span class="string">&quot;$&#123;LOG_FILE:-$&#123;LOG_PATH:-$&#123;LOG_TEMP:-$&#123;java.io.tmpdir:-/tmp&#125;&#125;/&#125;spring.log&#125;&quot;</span>/&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- 导入输入到文件的日志配置 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">include</span> <span class="attr">resource</span>=<span class="string">&quot;org/springframework/boot/logging/logback/file-appender.xml&quot;</span> /&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- 指定将日志输出到文件 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">root</span> <span class="attr">level</span>=<span class="string">&quot;INFO&quot;</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">&quot;FILE&quot;</span> /&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">debug:</span> <span class="literal">true</span></span><br><span class="line"><span class="comment"># 设置特定包下所有类的日志级别</span></span><br><span class="line"><span class="attr">logging:</span></span><br><span class="line">  <span class="attr">level:</span></span><br><span class="line">    <span class="comment"># 对指定日志组设置日志级别——意味着该组所对应所有包都将设为该日志级别</span></span><br><span class="line">    <span class="attr">mygp:</span> <span class="string">warn</span></span><br><span class="line">  <span class="comment"># 设置日志文件的保存目录</span></span><br><span class="line">  <span class="attr">file:</span></span><br><span class="line">    <span class="attr">path:</span> <span class="string">g:/log</span></span><br><span class="line">  <span class="attr">group:</span></span><br><span class="line">    <span class="comment"># 为多个包指定一个组名</span></span><br><span class="line">    <span class="attr">mygp:</span> <span class="string">org.crazyit.app.controller</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="改用Log4j2日志实现"><a href="#改用Log4j2日志实现" class="headerlink" title="改用Log4j2日志实现"></a>改用Log4j2日志实现</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!-- 默认会传递依赖Logback日志，因此你要在此处将Logback排除在外 --&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-logging<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">&lt;!-- 添加新的日志实现：Log4j2 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-log4j2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Logback拓展"><a href="#Logback拓展" class="headerlink" title="Logback拓展"></a>Logback拓展</h4><p>Spring Boot对 Logback 的扩展主要体现在如下两个方面：</p>
+<ul>
+<li><p>与Profile相关的日志。</p>
+<p>在logback-spring.xml文件中可指定一个**&lt;springProfile…/&gt;元素**，该元素可指定一个name属性，该name属性可被指定为 <strong>Profile名或 Profile表达式</strong>：当name属性被指定为Profile名时，表明该设置仅当特定的Profile被激活时有效；当name属性被指定为 Profile表达式时，表明仅当该表达式有效时，&lt;springProfile…/&gt;元素内的配置才生效。</p>
+</li>
+<li><p>环境属性。</p>
+</li>
+</ul>
+<p>此外，<strong>Logback的配置文件还可读取Spring Boot的配置属性</strong>（通过 application.propeties、系统属性、命令行参数等方式配置的属性)。在该配置文件中可通过**&lt;springProperty…/&gt;元素来获取配置属性**，该元素支持如下几个属性：</p>
+<ul>
+<li>name：为读取到的属性值<strong>指定名字</strong>。</li>
+<li>source：指定读取Spring Boot的哪个<strong>配置属性</strong>。SpringBoot解析该配置属性时能有效地使用宽松绑定。</li>
+<li>scope：指定存储该配置属性的<strong>作用域</strong>。</li>
+<li>defaultValue：当该配置属性可能不存在时，此属性用于指定默认值。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1904,7 +2277,7 @@
 </iframe>
 
 
-    <div id="aplayer-DQkEnXfT" class="aplayer aplayer-tag-marker meting-tag-marker" data-id="3986040" data-server="netease" data-type="song" data-mode="circulation" data-autoplay="false" data-mutex="true" data-listmaxheight="340px" data-preload="auto" data-theme="#555"></div>
+    <div id="aplayer-IhUaXMoD" class="aplayer aplayer-tag-marker meting-tag-marker" data-id="3986040" data-server="netease" data-type="song" data-mode="circulation" data-autoplay="false" data-mutex="true" data-listmaxheight="340px" data-preload="auto" data-theme="#555"></div>
       
     </div>
 
