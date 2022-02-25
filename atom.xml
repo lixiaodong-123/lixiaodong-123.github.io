@@ -6,7 +6,7 @@
   <link href="https://qiuzhiblog.cn/atom.xml" rel="self"/>
   
   <link href="https://qiuzhiblog.cn/"/>
-  <updated>2022-02-23T13:02:04.535Z</updated>
+  <updated>2022-02-24T14:26:07.529Z</updated>
   <id>https://qiuzhiblog.cn/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>SpringBoot自动配置概述</title>
+    <link href="https://qiuzhiblog.cn/2022/02/24/SpringBoot%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E6%A6%82%E8%BF%B0/"/>
+    <id>https://qiuzhiblog.cn/2022/02/24/SpringBoot%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E6%A6%82%E8%BF%B0/</id>
+    <published>2022-02-24T14:24:48.000Z</published>
+    <updated>2022-02-24T14:26:07.529Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;\assets\css\APlayer.min.css&quot;&gt;&lt;script src=&quot;\assets\js\APlayer.min.js&quot; cla</summary>
+      
+    
+    
+    
+    <category term="SpringBoot" scheme="https://qiuzhiblog.cn/categories/SpringBoot/"/>
+    
+    
+    <category term="SpringBoot" scheme="https://qiuzhiblog.cn/tags/SpringBoot/"/>
+    
+  </entry>
   
   <entry>
     <title>SpringBoot日志配置</title>
